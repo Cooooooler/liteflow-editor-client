@@ -76,6 +76,7 @@ export default class ThenOperator extends ELNode {
   public toCells(options: Record<string, any> = {}): Cell[] {
     this.resetCells();
     const { children, cells } = this;
+    console.log(children)
     let last: Node;
     children.forEach((child) => {
       child.toCells(options);

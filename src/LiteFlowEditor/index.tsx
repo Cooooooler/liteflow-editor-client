@@ -1,30 +1,31 @@
+import { Cell, Edge, Graph, Node } from '@antv/x6';
+import classNames from 'classnames';
 import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
   useRef,
   useState,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
 } from 'react';
-import { Graph, Edge, Cell, Node } from '@antv/x6';
-import classNames from 'classnames'
 import createFlowGraph from './panels/flowGraph/createFlowGraph';
 // import NodeEditorModal from './panels/flowGraph/nodeEditorModal';
-import FlowGraphContextMenu from './panels/flowGraph/contextMenu';
-import FlowGraphContextPad from './panels/flowGraph/contextPad';
-import GraphContext from './context/GraphContext';
-import Layout from './panels/layout';
-import SideBar from './panels/sideBar';
-import ToolBar from './panels/toolBar';
-import SettingBar from './panels/settingBar';
-import Breadcrumb from './panels/breadcrumb';
-import styles from './index.module.less';
 import '@antv/x6/dist/x6.css';
+import { Button } from 'antd';
 import { forceLayout } from './common/layout';
+import { MIN_ZOOM } from './constant';
+import GraphContext from './context/GraphContext';
 import { useModel } from './hooks';
 import { history } from './hooks/useHistory';
-import ELBuilder from './model/builder';
 import { setModel } from './hooks/useModel';
-import { MIN_ZOOM } from './constant';
+import styles from './index.module.less';
+import ELBuilder from './model/builder';
+import Breadcrumb from './panels/breadcrumb';
+import FlowGraphContextMenu from './panels/flowGraph/contextMenu';
+import FlowGraphContextPad from './panels/flowGraph/contextPad';
+import Layout from './panels/layout';
+import SettingBar from './panels/settingBar';
+import SideBar from './panels/sideBar';
+import ToolBar from './panels/toolBar';
 
 interface ILiteFlowEditorProps {
   /**
@@ -45,6 +46,7 @@ interface ILiteFlowEditorProps {
    * 更多子节点
    */
   children?: React.ReactNode;
+
   /**
    * 其他可扩展属性
    */
@@ -74,7 +76,10 @@ const defaultPadInfo: IPadInfo = {
   visible: false,
 };
 
-const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (props, ref) {
+const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (
+  props,
+  ref,
+) {
   const { className, onReady, widgets, children } = props;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const graphRef = useRef<HTMLDivElement>(null);
@@ -97,9 +102,9 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (prop
       const model = ELBuilder.build(data || {});
       setModel(model);
       history.cleanHistory();
-      flowGraph?.zoomToFit({minScale: MIN_ZOOM, maxScale: 1});
-    }
-  }
+      flowGraph?.zoomToFit({ minScale: MIN_ZOOM, maxScale: 1 });
+    },
+  };
   useImperativeHandle(ref, () => currentEditor as any);
 
   useEffect(() => {
@@ -151,6 +156,7 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (prop
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const model = useModel();
         const modelJSON = model.toCells() as Cell[];
+        console.log(modelJSON);
         flowGraph.scroller.disableAutoResize();
         flowGraph.startBatch('update');
         flowGraph.resetCells(modelJSON);
@@ -181,8 +187,20 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (prop
   return (
     // @ts-ignore
     <GraphContext.Provider // @ts-ignore
-      value={{ graph: flowGraph, graphWrapper: wrapperRef, model: null, currentEditor }}
+      value={{
+        graph: flowGraph,
+        graphWrapper: wrapperRef,
+        model: null,
+        currentEditor,
+      }}
     >
+      <Button
+        onClick={() => {
+          console.log(flowGraph);
+        }}
+      >
+        测试
+      </Button>
       <Layout
         flowGraph={flowGraph}
         SideBar={SideBar}
@@ -190,7 +208,10 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (prop
         SettingBar={SettingBar}
         widgets={widgets}
       >
-        <div className={classNames(styles.liteflowEditorContainer, className)} ref={wrapperRef}>
+        <div
+          className={classNames(styles.liteflowEditorContainer, className)}
+          ref={wrapperRef}
+        >
           <div className={styles.liteflowEditorGraph} ref={graphRef} />
           <div className={styles.liteflowEditorMiniMap} ref={miniMapRef} />
           {flowGraph && <Breadcrumb flowGraph={flowGraph} />}

@@ -1,7 +1,7 @@
 import { Cell, Node } from '@antv/x6';
-import ELNode, { Properties } from '../node';
-import { NodeTypeEnum } from '../../constant';
 import { getNodeShapeByType } from '../../cells';
+import { NodeTypeEnum } from '../../constant';
+import ELNode, { Properties } from '../node';
 
 /**
  * 节点组件操作符：是EL表达式树型结构的叶子结点。
@@ -10,45 +10,51 @@ import { getNodeShapeByType } from '../../cells';
  * (1) EL表达式形式：THEN(a, b, c, d)
  * (2) JSON表示形式：
  * {
-    type: ConditionTypeEnum.THEN,
-    children: [
-      { type: NodeTypeEnum.COMMON, id: 'a' },
-      { type: NodeTypeEnum.COMMON, id: 'b' },
-      { type: NodeTypeEnum.COMMON, id: 'c' },
-      { type: NodeTypeEnum.COMMON, id: 'd' },
-    ],
-  }
+ type: ConditionTypeEnum.THEN,
+ children: [
+ { type: NodeTypeEnum.COMMON, id: 'a' },
+ { type: NodeTypeEnum.COMMON, id: 'b' },
+ { type: NodeTypeEnum.COMMON, id: 'c' },
+ { type: NodeTypeEnum.COMMON, id: 'd' },
+ ],
+ }
  * (3) 通过ELNode节点模型进行表示的组合关系为：
-                                          ┌─────────────────┐
-                                      ┌──▶│  NodeOperator   │
-                                      │   └─────────────────┘
-                                      │   ┌─────────────────┐
-                                      ├──▶│  NodeOperator   │
-  ┌─────────┐    ┌─────────────────┐  │   └─────────────────┘
-  │  Chain  │───▶│  ThenOperator   │──┤   ┌─────────────────┐
-  └─────────┘    └─────────────────┘  ├──▶│  NodeOperator   │
-                                      │   └─────────────────┘
-                                      │   ┌─────────────────┐
-                                      └──▶│  NodeOperator   │
-                                          └─────────────────┘
+ ┌─────────────────┐
+ ┌──▶│  NodeOperator   │
+ │   └─────────────────┘
+ │   ┌─────────────────┐
+ ├──▶│  NodeOperator   │
+ ┌─────────┐    ┌─────────────────┐  │   └─────────────────┘
+ │  Chain  │───▶│  ThenOperator   │──┤   ┌─────────────────┐
+ └─────────┘    └─────────────────┘  ├──▶│  NodeOperator   │
+ │   └─────────────────┘
+ │   ┌─────────────────┐
+ └──▶│  NodeOperator   │
+ └─────────────────┘
  */
 export default class NodeOperator extends ELNode {
   type: NodeTypeEnum;
   parent?: ELNode;
   id: string;
   node?: Node;
+  ids?: string;
+  position?: { x: number; y: number };
 
   constructor(
     parent?: ELNode,
     type?: NodeTypeEnum,
     id?: string,
     properties?: Properties,
+    ids?: string,
+    position?: { x: number; y: number },
   ) {
     super();
     this.parent = parent;
     this.type = type || NodeTypeEnum.COMMON;
     this.id = id || `Placeholder${Math.ceil(Math.random() * 10)}`;
     this.properties = properties;
+    this.ids = ids;
+    this.position = position;
   }
 
   /**
@@ -68,6 +74,7 @@ export default class NodeOperator extends ELNode {
   /**
    * 转换为X6的图数据格式
    */
+  // :TODO id
   public toCells(options: Record<string, any> = {}): Cell[] {
     if (!this.node) {
       this.resetCells();
@@ -77,8 +84,10 @@ export default class NodeOperator extends ELNode {
         attrs: {
           label: { text: id },
         },
+        id: this.ids,
         ...(options || {}),
       });
+      node.position(this?.position?.x ?? 0, this?.position?.y ?? 0);
       node.setData({ model: this }, { overwrite: true });
       cells.push(this.addNode(node));
       this.node = node;

@@ -1,13 +1,35 @@
 import { ConditionTypeEnum, NodeTypeEnum } from '../constant';
+
 export default {
   // 串行编排(THEN)
   THEN: {
     type: ConditionTypeEnum.THEN,
     children: [
-      { type: NodeTypeEnum.COMMON, id: 'a', properties: { tag: 'dog' } },
-      { type: NodeTypeEnum.COMMON, id: 'b' },
-      { type: NodeTypeEnum.COMMON, id: 'c' },
-      { type: NodeTypeEnum.COMMON, id: 'd' },
+      {
+        type: NodeTypeEnum.COMMON,
+        id: 'a',
+        properties: { tag: 'dog' },
+        // ids: '1',
+        // position: { x: 220, y: 40 },
+      },
+      {
+        type: NodeTypeEnum.COMMON,
+        id: 'b',
+        // ids: '2',
+        // position: { x: 310, y: 40 },
+      },
+      {
+        type: NodeTypeEnum.COMMON,
+        id: 'c',
+        // ids: '3',
+        // position: { x: 400, y: 40 },
+      },
+      {
+        type: NodeTypeEnum.COMMON,
+        id: 'd',
+        // ids: '4',
+        // position: { x: 40, y: 40 },
+      },
     ],
     properties: { id: 'cat' },
   },
@@ -101,11 +123,9 @@ export default {
       {
         type: ConditionTypeEnum.IF,
         condition: { type: NodeTypeEnum.IF, id: 'x' },
-        children: [
-          { type: NodeTypeEnum.COMMON, id: 'y' },
-        ],
+        children: [{ type: NodeTypeEnum.COMMON, id: 'y' }],
       },
-    ]
+    ],
   },
   // AND_OR_NOT 与或非
   AND: {
@@ -118,15 +138,13 @@ export default {
           children: [
             { type: NodeTypeEnum.BOOLEAN, id: 'a' },
             { type: NodeTypeEnum.BOOLEAN, id: 'b' },
-          ]
+          ],
         },
         {
           type: ConditionTypeEnum.NOT,
-          children: [
-            { type: NodeTypeEnum.BOOLEAN, id: 'c' },
-          ]
-        }
-      ]
+          children: [{ type: NodeTypeEnum.BOOLEAN, id: 'c' }],
+        },
+      ],
     },
     children: [
       { type: NodeTypeEnum.COMMON, id: 'x' },
@@ -145,6 +163,8 @@ export default {
           {
             type: ConditionTypeEnum.CHAIN,
             id: 't1',
+            ids: '1',
+            position: { x: 220, y: 40 },
             children: [
               {
                 type: ConditionTypeEnum.THEN,
@@ -155,10 +175,10 @@ export default {
                     children: [
                       { type: NodeTypeEnum.COMMON, id: 'J' },
                       { type: NodeTypeEnum.COMMON, id: 'K' },
-                    ]
+                    ],
                   },
-                ]
-              }
+                ],
+              },
             ],
           },
           { type: NodeTypeEnum.COMMON, id: 'D' },
@@ -171,15 +191,15 @@ export default {
                 children: [
                   { type: NodeTypeEnum.COMMON, id: 'H' },
                   { type: NodeTypeEnum.COMMON, id: 'I' },
-                ]
-              }
+                ],
+              },
             ],
           },
         ],
       },
       {
         type: ConditionTypeEnum.SWITCH,
-        condition: { type: NodeTypeEnum.COMMON, id: 'X'},
+        condition: { type: NodeTypeEnum.COMMON, id: 'X' },
         children: [
           { type: NodeTypeEnum.COMMON, id: 'M' },
           { type: NodeTypeEnum.COMMON, id: 'N' },
@@ -196,11 +216,11 @@ export default {
                     children: [
                       { type: NodeTypeEnum.COMMON, id: 'P' },
                       { type: NodeTypeEnum.COMMON, id: 'R' },
-                    ]
+                    ],
                   },
                 ],
                 properties: {
-                  id: 'w01'
+                  id: 'w01',
                 },
               },
             ],

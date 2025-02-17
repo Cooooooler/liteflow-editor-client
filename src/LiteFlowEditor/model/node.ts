@@ -1,5 +1,5 @@
-import {Cell, Node} from '@antv/x6';
-import {ConditionTypeEnum, NodeTypeEnum} from '../constant';
+import { Cell, Node } from '@antv/x6';
+import { ConditionTypeEnum, NodeTypeEnum } from '../constant';
 
 /**
  * EL表达式的模型表示：数据结构本质上是一个树形结构。
@@ -7,27 +7,27 @@ import {ConditionTypeEnum, NodeTypeEnum} from '../constant';
  * (1) EL表达式形式：THEN(a, b, c, d)
  * (2) JSON表示形式：
  * {
-    type: ConditionTypeEnum.THEN,
-    children: [
-      { type: NodeTypeEnum.COMMON, id: 'a' },
-      { type: NodeTypeEnum.COMMON, id: 'b' },
-      { type: NodeTypeEnum.COMMON, id: 'c' },
-      { type: NodeTypeEnum.COMMON, id: 'd' },
-    ],
-  }
+ type: ConditionTypeEnum.THEN,
+ children: [
+ { type: NodeTypeEnum.COMMON, id: 'a' },
+ { type: NodeTypeEnum.COMMON, id: 'b' },
+ { type: NodeTypeEnum.COMMON, id: 'c' },
+ { type: NodeTypeEnum.COMMON, id: 'd' },
+ ],
+ }
  * (3) 通过ELNode节点模型表示为：
-                                          ┌─────────────────┐
-                                      ┌──▶│  NodeOperator   │
-                                      │   └─────────────────┘
-                                      │   ┌─────────────────┐
-                                      ├──▶│  NodeOperator   │
-  ┌─────────┐    ┌─────────────────┐  │   └─────────────────┘
-  │  Chain  │───▶│  ThenOperator   │──┤   ┌─────────────────┐
-  └─────────┘    └─────────────────┘  ├──▶│  NodeOperator   │
-                                      │   └─────────────────┘
-                                      │   ┌─────────────────┐
-                                      └──▶│  NodeOperator   │
-                                          └─────────────────┘
+ ┌─────────────────┐
+ ┌──▶│  NodeOperator   │
+ │   └─────────────────┘
+ │   ┌─────────────────┐
+ ├──▶│  NodeOperator   │
+ ┌─────────┐    ┌─────────────────┐  │   └─────────────────┘
+ │  Chain  │───▶│  ThenOperator   │──┤   ┌─────────────────┐
+ └─────────┘    └─────────────────┘  ├──▶│  NodeOperator   │
+ │   └─────────────────┘
+ │   ┌─────────────────┐
+ └──▶│  NodeOperator   │
+ └─────────────────┘
  */
 export default abstract class ELNode {
   // 节点类型：可以是编排类型，也可以是组件类型
@@ -291,7 +291,7 @@ export default abstract class ELNode {
    * 获取当前节点的结束节点
    */
   public getEndNode(): Node {
-    return this.collapsed ? this.startNode as Node : this.endNode as Node;
+    return this.collapsed ? (this.startNode as Node) : (this.endNode as Node);
   }
 
   /**
@@ -343,13 +343,25 @@ export default abstract class ELNode {
    * 转换为JSON格式
    */
   public toJSON(): Record<string, any> {
-    const {type, condition, children, properties, id} = this;
+    const { type, condition, children, properties, id, nodes } = this;
     return Object.assign(
-      {type},
-      condition ? {condition: condition.toJSON()} : {},
-      children ? {children: children.filter(x => x).map((child) => child.toJSON())} : {},
-      id ? {id} : {},
-      properties ? {properties: this.getProperties()} : {},
+      { type },
+      condition ? { condition: condition.toJSON() } : {},
+      children
+        ? {
+            children: children
+              .filter((x) => x)
+              .map((child) => {
+                return {
+                  ...child.toJSON(),
+                };
+              }),
+          }
+        : {},
+      id ? { id } : {},
+      properties ? { properties: this.getProperties() } : {},
+      nodes ? { position: nodes?.[0]?.position() } : {},
+      nodes ? { ids: nodes?.[0]?.id } : {},
     );
   }
 

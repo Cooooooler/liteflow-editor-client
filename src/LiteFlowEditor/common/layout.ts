@@ -1,7 +1,7 @@
-import { Graph, Node } from '@antv/x6';
-import { DagreLayout, DagreLayoutOptions } from '@antv/layout';
-import { NODE_WIDTH, RANK_SEP, NODE_SEP, ConditionTypeEnum } from '../constant';
-import { KeyValue } from '@antv/x6/lib/types';
+import {Graph, Node} from '@antv/x6';
+import {DagreLayout, DagreLayoutOptions} from '@antv/layout';
+import {NODE_WIDTH, RANK_SEP, NODE_SEP, ConditionTypeEnum} from '../constant';
+import {KeyValue} from '@antv/x6/lib/types';
 // import dagre from '@dagrejs/dagre';
 // import ELK from 'elkjs/lib/elk.bundled.js';
 // import cytoscape from 'cytoscape';
@@ -51,7 +51,7 @@ function antvDagreLayout(flowGraph: Graph, cfg: any = {}): void {
     ...cfg,
   });
 
-  const { nodes: newNodes } = dagreLayout.layout({
+  const {nodes: newNodes} = dagreLayout.layout({
     // @ts-ignore
     nodes: flowGraph.getNodes().map((node) => {
       node.setZIndex(1);
@@ -66,15 +66,21 @@ function antvDagreLayout(flowGraph: Graph, cfg: any = {}): void {
   flowGraph.freeze();
 
   newNodes?.forEach((node: any) => {
+
     const cell: Node | undefined = flowGraph.getCellById(node.id) as
       | Node
       | undefined;
     if (cell) {
-      cell.position(node.x, node.y);
+      const positionMes = cell.position()
+      console.log(positionMes)
+      if (positionMes.x === 0 && positionMes.y === 0) {
+        cell.position(node.x, node.y);
+      }
     }
   });
 
-  fineTuneLayer(flowGraph);
+  // TODO:放开会触发过度检查层次从而造成性能问题
+  // fineTuneLayer(flowGraph);
 
   // fineTuneCatchNodes(flowGraph);
 
@@ -97,7 +103,7 @@ function fineTuneLayer(flowGraph: Graph) {
       //   return;
       // }
       // visited[next.id] = true;
-      const { y } = next.position();
+      const {y} = next.position();
       next.position(begin[0] + layer * (ranksep + nodeSize + 40), y);
 
       const neighbors = flowGraph.getNeighbors(next, {
@@ -120,7 +126,7 @@ function fineTuneCatchNodes(flowGraph: Graph) {
   while (queue.length) {
     let cells: Node[] = [];
     queue.forEach((next: Node) => {
-      const { model } = next.getData();
+      const {model} = next.getData();
       const currentModel = model.proxy || model;
       if (currentModel.type === ConditionTypeEnum.CATCH) {
         if (next.shape === ConditionTypeEnum.CATCH) {
@@ -154,7 +160,7 @@ function beforeCatchStart(flowGraph: Graph, catchStart: Node) {
   while (queue.length) {
     let cells: Node[] = [];
     queue.forEach((next: Node) => {
-      const { x, y } = next.position();
+      const {x, y} = next.position();
       next.position(x, y - deltaY);
 
       const neighbors = flowGraph.getNeighbors(next, {
@@ -179,7 +185,7 @@ function afterCatchEnd(flowGraph: Graph, catchEnd: Node) {
   while (queue.length) {
     let cells: Node[] = [];
     queue.forEach((next: Node) => {
-      const { x, y } = next.position();
+      const {x, y} = next.position();
       next.position(x, y - deltaY);
 
       const neighbors = flowGraph.getNeighbors(next, {
@@ -211,8 +217,8 @@ function getNodeOrderFrom(flowGraph: Graph): string[] {
         outgoing: true,
       }) as Node[];
       neighbors.sort((a: Node, b: Node) => {
-        const { y: aY } = a.position();
-        const { y: bY } = b.position();
+        const {y: aY} = a.position();
+        const {y: bY} = b.position();
         return aY - bY;
       });
       const lastIndex = queue.length;
