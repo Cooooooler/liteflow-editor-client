@@ -1,9 +1,12 @@
+import { Cell, Graph, NodeView } from '@antv/x6';
+import { Keyboard } from '@antv/x6-plugin-keyboard';
+import { Scroller } from '@antv/x6-plugin-scroller';
+import { Selection } from '@antv/x6-plugin-selection';
+import { Button } from 'antd';
+import { debounce } from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Button } from 'antd';
-import { Cell, Graph, NodeView } from '@antv/x6';
-import { debounce } from 'lodash';
-import { MIN_ZOOM, MAX_ZOOM } from '../../constant';
+import { MAX_ZOOM, MIN_ZOOM } from '../../constant';
 // import MiniMapSimpleNode from './miniMapSimpleNode';
 import {
   LITEFLOW_ANCHOR,
@@ -194,6 +197,20 @@ const createFlowChart = (
       edgeLabelMovable: false,
     },
   });
+  flowGraph.use(
+    new Selection({
+      enabled: true,
+    }),
+    new Keyboard({
+      enabled: true,
+    }),
+    new Scroller({
+      enabled: true,
+      pageVisible: true,
+      pageBreak: true,
+      pannable: true,
+    }),
+  );
   registerEvents(flowGraph);
   registerShortcuts(flowGraph);
   return flowGraph;

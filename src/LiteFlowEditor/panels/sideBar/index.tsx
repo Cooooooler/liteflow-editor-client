@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Collapse } from 'antd';
-import { Addon, Edge, Graph, Node } from '@antv/x6';
+import { Edge, Graph, Node } from '@antv/x6';
+import {Dnd} from '@antv/x6-plugin-dnd';
 import classNames from 'classnames';
 import {
   NODE_GROUP,
@@ -44,7 +45,7 @@ const SideBar: React.FC<ISideBarProps> = (props) => {
   const [groups, setGroups] = useState<IGroupItem[]>([]);
   const dnd = useMemo(
     () =>
-      new Addon.Dnd({
+      new Dnd({
         target: flowGraph,
         scaled: true,
         validateNode: (droppingNode: Node) => {

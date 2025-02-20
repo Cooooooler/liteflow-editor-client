@@ -9,8 +9,6 @@ import React, {
 } from 'react';
 import createFlowGraph from './panels/flowGraph/createFlowGraph';
 // import NodeEditorModal from './panels/flowGraph/nodeEditorModal';
-import '@antv/x6/dist/x6.css';
-import { Button } from 'antd';
 import { forceLayout } from './common/layout';
 import { MIN_ZOOM } from './constant';
 import GraphContext from './context/GraphContext';
@@ -76,149 +74,149 @@ const defaultPadInfo: IPadInfo = {
   visible: false,
 };
 
-const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (
-  props,
-  ref,
-) {
-  const { className, onReady, widgets, children } = props;
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const graphRef = useRef<HTMLDivElement>(null);
-  const miniMapRef = useRef<HTMLDivElement>(null);
-  const [flowGraph, setFlowGraph] = useState<Graph>();
-  const [contextMenuInfo, setContextMenuInfo] =
-    useState<IMenuInfo>(defaultMenuInfo);
-  const [contextPadInfo, setContextPadInfo] =
-    useState<IPadInfo>(defaultPadInfo);
+const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(
+  function (props, ref) {
+    const { className, onReady, widgets, children } = props;
+    const wrapperRef = useRef<HTMLDivElement>(null);
+    const graphRef = useRef<HTMLDivElement>(null);
+    const miniMapRef = useRef<HTMLDivElement>(null);
+    const [flowGraph, setFlowGraph] = useState<Graph>();
+    const [contextMenuInfo, setContextMenuInfo] =
+      useState<IMenuInfo>(defaultMenuInfo);
+    const [contextPadInfo, setContextPadInfo] =
+      useState<IPadInfo>(defaultPadInfo);
 
-  const currentEditor = {
-    getGraphInstance() {
-      return flowGraph;
-    },
-    toJSON() {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      return useModel().toJSON();
-    },
-    fromJSON(data: Record<string, any>) {
-      const model = ELBuilder.build(data || {});
-      setModel(model);
-      history.cleanHistory();
-      flowGraph?.zoomToFit({ minScale: MIN_ZOOM, maxScale: 1 });
-    },
-  };
-  useImperativeHandle(ref, () => currentEditor as any);
-
-  useEffect(() => {
-    if (graphRef.current && miniMapRef.current) {
-      const flowGraph = createFlowGraph(graphRef.current, miniMapRef.current);
-      onReady?.(flowGraph);
-      setFlowGraph(flowGraph);
-      history.init(flowGraph);
-    }
-  }, []);
-
-  // resize flowGraph's size when window size changes
-  useEffect(() => {
-    const handler = () => {
-      requestAnimationFrame(() => {
-        if (flowGraph && wrapperRef && wrapperRef.current) {
-          const width = wrapperRef.current.clientWidth;
-          const height = wrapperRef.current.clientHeight;
-          flowGraph.resize(width, height);
-        }
-      });
-    };
-    window.addEventListener('resize', handler);
-    return () => {
-      window.removeEventListener('resize', handler);
-    };
-  }, [flowGraph, wrapperRef]);
-
-  // NOTE: listen toggling context menu event
-  useEffect(() => {
-    const showHandler = (info: IMenuInfo) => {
-      flowGraph?.lockScroller();
-      setContextMenuInfo({ ...info, visible: true });
-    };
-    const hideHandler = () => {
-      flowGraph?.unlockScroller();
-      setContextMenuInfo({ ...contextMenuInfo, visible: false });
-    };
-    const showContextPad = (info: IPadInfo) => {
-      flowGraph?.lockScroller();
-      setContextPadInfo({ ...info, visible: true });
-    };
-    const hideContextPad = () => {
-      flowGraph?.unlockScroller();
-      setContextPadInfo({ ...contextPadInfo, visible: false });
-    };
-    const handleModelChange = () => {
-      if (flowGraph) {
+    const currentEditor = {
+      getGraphInstance() {
+        return flowGraph;
+      },
+      toJSON() {
         // eslint-disable-next-line react-hooks/rules-of-hooks
-        const model = useModel();
-        const modelJSON = model.toCells() as Cell[];
-        flowGraph.scroller.disableAutoResize();
-        flowGraph.startBatch('update');
-        flowGraph.resetCells(modelJSON);
-        forceLayout(flowGraph);
-        flowGraph.stopBatch('update');
-        flowGraph.scroller.enableAutoResize();
-        flowGraph.trigger('model:changed');
-      }
+        return useModel().toJSON();
+      },
+      fromJSON(data: Record<string, any>) {
+        const model = ELBuilder.build(data || {});
+        setModel(model);
+        history.cleanHistory();
+        flowGraph?.zoomToFit({ minScale: MIN_ZOOM, maxScale: 1 });
+      },
     };
-    if (flowGraph) {
-      flowGraph.on('graph:showContextMenu', showHandler);
-      flowGraph.on('graph:hideContextMenu', hideHandler);
-      flowGraph.on('graph:showContextPad', showContextPad);
-      flowGraph.on('graph:hideContextPad', hideContextPad);
-      flowGraph.on('model:change', handleModelChange);
-    }
-    return () => {
-      if (flowGraph) {
-        flowGraph.off('graph:showContextMenu', showHandler);
-        flowGraph.off('graph:hideContextMenu', hideHandler);
-        flowGraph.off('graph:showContextPad', showContextPad);
-        flowGraph.off('graph:hideContextPad', hideContextPad);
-        flowGraph.off('model:change', handleModelChange);
-      }
-    };
-  }, [flowGraph]);
+    useImperativeHandle(ref, () => currentEditor as any);
 
-  return (
-    // @ts-ignore
-    <GraphContext.Provider // @ts-ignore
-      value={{
-        graph: flowGraph,
-        graphWrapper: wrapperRef,
-        model: null,
-        currentEditor,
-      }}
-    >
-      <Layout
-        flowGraph={flowGraph}
-        SideBar={SideBar}
-        ToolBar={ToolBar}
-        SettingBar={SettingBar}
-        widgets={widgets}
+    useEffect(() => {
+      if (graphRef.current && miniMapRef.current) {
+        const flowGraph = createFlowGraph(graphRef.current, miniMapRef.current);
+        onReady?.(flowGraph);
+        setFlowGraph(flowGraph);
+        history.init(flowGraph);
+      }
+    }, []);
+
+    // resize flowGraph's size when window size changes
+    useEffect(() => {
+      const handler = () => {
+        requestAnimationFrame(() => {
+          if (flowGraph && wrapperRef && wrapperRef.current) {
+            const width = wrapperRef.current.clientWidth;
+            const height = wrapperRef.current.clientHeight;
+            flowGraph.resize(width, height);
+          }
+        });
+      };
+      window.addEventListener('resize', handler);
+      return () => {
+        window.removeEventListener('resize', handler);
+      };
+    }, [flowGraph, wrapperRef]);
+
+    // NOTE: listen toggling context menu event
+    useEffect(() => {
+      const showHandler = (info: IMenuInfo) => {
+        flowGraph?.lockScroller();
+        setContextMenuInfo({ ...info, visible: true });
+      };
+      const hideHandler = () => {
+        flowGraph?.unlockScroller();
+        setContextMenuInfo({ ...contextMenuInfo, visible: false });
+      };
+      const showContextPad = (info: IPadInfo) => {
+        flowGraph?.lockScroller();
+        setContextPadInfo({ ...info, visible: true });
+      };
+      const hideContextPad = () => {
+        flowGraph?.unlockScroller();
+        setContextPadInfo({ ...contextPadInfo, visible: false });
+      };
+      const handleModelChange = () => {
+        if (flowGraph) {
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const model = useModel();
+          const modelJSON = model.toCells() as Cell[];
+          flowGraph.startBatch('update');
+          flowGraph.resetCells(modelJSON);
+          forceLayout(flowGraph);
+          flowGraph.stopBatch('update');
+          flowGraph.trigger('model:changed');
+        }
+      };
+      if (flowGraph) {
+        flowGraph.on('graph:showContextMenu', showHandler);
+        flowGraph.on('graph:hideContextMenu', hideHandler);
+        flowGraph.on('graph:showContextPad', showContextPad);
+        flowGraph.on('graph:hideContextPad', hideContextPad);
+        flowGraph.on('model:change', handleModelChange);
+      }
+      return () => {
+        if (flowGraph) {
+          flowGraph.off('graph:showContextMenu', showHandler);
+          flowGraph.off('graph:hideContextMenu', hideHandler);
+          flowGraph.off('graph:showContextPad', showContextPad);
+          flowGraph.off('graph:hideContextPad', hideContextPad);
+          flowGraph.off('model:change', handleModelChange);
+        }
+      };
+    }, [flowGraph]);
+
+    return (
+      // @ts-ignore
+      <GraphContext.Provider // @ts-ignore
+        value={{
+          graph: flowGraph,
+          graphWrapper: wrapperRef,
+          model: null,
+          currentEditor,
+        }}
       >
-        <div
-          className={classNames(styles.liteflowEditorContainer, className)}
-          ref={wrapperRef}
+        <Layout
+          flowGraph={flowGraph}
+          SideBar={SideBar}
+          ToolBar={ToolBar}
+          SettingBar={SettingBar}
+          widgets={widgets}
         >
-          <div className={styles.liteflowEditorGraph} ref={graphRef} />
-          <div className={styles.liteflowEditorMiniMap} ref={miniMapRef} />
-          {flowGraph && <Breadcrumb flowGraph={flowGraph} />}
-          {/* {flowGraph && <NodeEditorModal flowGraph={flowGraph} />} */}
-          {flowGraph && (
-            <FlowGraphContextMenu {...contextMenuInfo} flowGraph={flowGraph} />
-          )}
-          {flowGraph && (
-            <FlowGraphContextPad {...contextPadInfo} flowGraph={flowGraph} />
-          )}
-          {children}
-        </div>
-      </Layout>
-    </GraphContext.Provider>
-  );
-});
+          <div
+            className={classNames(styles.liteflowEditorContainer, className)}
+            ref={wrapperRef}
+          >
+            <div className={styles.liteflowEditorGraph} ref={graphRef} />
+            <div className={styles.liteflowEditorMiniMap} ref={miniMapRef} />
+            {flowGraph && <Breadcrumb flowGraph={flowGraph} />}
+            {/* {flowGraph && <NodeEditorModal flowGraph={flowGraph} />} */}
+            {flowGraph && (
+              <FlowGraphContextMenu
+                {...contextMenuInfo}
+                flowGraph={flowGraph}
+              />
+            )}
+            {flowGraph && (
+              <FlowGraphContextPad {...contextPadInfo} flowGraph={flowGraph} />
+            )}
+            {children}
+          </div>
+        </Layout>
+      </GraphContext.Provider>
+    );
+  },
+);
 
 export default LiteFlowEditor;

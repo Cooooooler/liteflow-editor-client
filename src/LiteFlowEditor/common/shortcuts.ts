@@ -1,10 +1,10 @@
-import { safeGet } from '../utils';
-import { message, Modal } from 'antd';
 import { Graph } from '@antv/x6';
-import { MIN_ZOOM, MAX_ZOOM, ZOOM_STEP } from '../constant';
-import { getSelectedNodes } from '../utils/flowChartUtils';
+import { message, Modal } from 'antd';
+import { MAX_ZOOM, MIN_ZOOM, ZOOM_STEP } from '../constant';
 import { history } from '../hooks/useHistory';
 import { useModel } from '../hooks/useModel';
+import { safeGet } from '../utils';
+import { getSelectedNodes } from '../utils/flowChartUtils';
 
 interface Shortcut {
   keys: string | string[];

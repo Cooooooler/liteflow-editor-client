@@ -1,7 +1,7 @@
-import {Graph, Node} from '@antv/x6';
+import {Graph, Node, KeyValue} from '@antv/x6';
 import {DagreLayout, DagreLayoutOptions} from '@antv/layout';
 import {NODE_WIDTH, RANK_SEP, NODE_SEP, ConditionTypeEnum} from '../constant';
-import {KeyValue} from '@antv/x6/lib/types';
+import {} from '@antv/x6';
 // import dagre from '@dagrejs/dagre';
 // import ELK from 'elkjs/lib/elk.bundled.js';
 // import cytoscape from 'cytoscape';
@@ -63,8 +63,6 @@ function antvDagreLayout(flowGraph: Graph, cfg: any = {}): void {
     }),
   });
 
-  flowGraph.freeze();
-
   newNodes?.forEach((node: any) => {
 
     const cell: Node | undefined = flowGraph.getCellById(node.id) as
@@ -82,8 +80,6 @@ function antvDagreLayout(flowGraph: Graph, cfg: any = {}): void {
   // fineTuneLayer(flowGraph);
 
   // fineTuneCatchNodes(flowGraph);
-
-  flowGraph.unfreeze();
 }
 
 /**
