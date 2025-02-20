@@ -1,12 +1,12 @@
-import { Cell, Node, Edge } from '@antv/x6';
-import ELNode, { Properties } from '../node';
-import { ELStartNode, ELEndNode } from '../utils';
+import { Cell, Edge, Node } from '@antv/x6';
 import {
   ConditionTypeEnum,
   LITEFLOW_EDGE,
-  NODE_TYPE_INTERMEDIATE_END,
   NodeTypeEnum,
+  NODE_TYPE_INTERMEDIATE_END,
 } from '../../constant';
+import ELNode, { Properties } from '../node';
+import { ELEndNode, ELStartNode } from '../utils';
 import NodeOperator from './node-operator';
 
 /**
@@ -16,24 +16,24 @@ import NodeOperator from './node-operator';
  * (1) EL表达式语法：t1 = THEN(a, b, c)
  * (2) JSON表示形式：
  * {
-    type: ConditionTypeEnum.CHAIN,
-    id: 't1',
-    children: [
-      { type: NodeTypeEnum.COMMON, id: 'a' },
-      { type: NodeTypeEnum.COMMON, id: 'b' },,
-      { type: NodeTypeEnum.COMMON, id: 'c' },
-    ],
-  }
-  * (3) 通过ELNode节点模型进行表示的组合关系为：
-                                          ┌─────────────────┐
-                                      ┌──▶│  NodeOperator   │
-  ┌─────────┐    ┌─────────────────┐  │   └─────────────────┘
-  │  Chain  │───▶│  ChainOperator  │──┤   ┌─────────────────┐
-  └─────────┘    └─────────────────┘  ├──▶│  NodeOperator   │
-                                      │   └─────────────────┘
-                                      │   ┌─────────────────┐
-                                      └──▶│  NodeOperator   │
-                                          └─────────────────┘
+ type: ConditionTypeEnum.CHAIN,
+ id: 't1',
+ children: [
+ { type: NodeTypeEnum.COMMON, id: 'a' },
+ { type: NodeTypeEnum.COMMON, id: 'b' },,
+ { type: NodeTypeEnum.COMMON, id: 'c' },
+ ],
+ }
+ * (3) 通过ELNode节点模型进行表示的组合关系为：
+ ┌─────────────────┐
+ ┌──▶│  NodeOperator   │
+ ┌─────────┐    ┌─────────────────┐  │   └─────────────────┘
+ │  Chain  │───▶│  ChainOperator  │──┤   ┌─────────────────┐
+ └─────────┘    └─────────────────┘  ├──▶│  NodeOperator   │
+ │   └─────────────────┘
+ │   ┌─────────────────┐
+ └──▶│  NodeOperator   │
+ └─────────────────┘
  */
 export default class ChainOperator extends ELNode {
   type = ConditionTypeEnum.CHAIN;
@@ -44,8 +44,15 @@ export default class ChainOperator extends ELNode {
   endNode?: Node;
   id?: string;
 
-  constructor(parent?: ELNode, id?: string, children?: ELNode[], properties?: Properties) {
-    super();
+  constructor(
+    parent?: ELNode,
+    id?: string,
+    children?: ELNode[],
+    properties?: Properties,
+    ids?: string,
+    position?: { x: number; y: number },
+  ) {
+    super(ids, position);
     this.parent = parent;
     this.id = id || `Placeholder${Math.ceil(Math.random() * 10)}`;
     if (children) {
@@ -77,17 +84,22 @@ export default class ChainOperator extends ELNode {
       attrs: {
         label: { text: id },
       },
+      id: this.ids,
     });
-    start.setData({
-      model: new ELStartNode(this),
-      toolbar: {
-        prepend: true,
-        append: true,
-        delete: true,
-        replace: true,
-        collapse: true,
+    start.position(this?.position?.x ?? 0, this?.position?.y ?? 0);
+    start.setData(
+      {
+        model: new ELStartNode(this),
+        toolbar: {
+          prepend: true,
+          append: true,
+          delete: true,
+          replace: true,
+          collapse: true,
+        },
       },
-    }, { overwrite: true });
+      { overwrite: true },
+    );
     cells.push(this.addNode(start));
     this.startNode = start;
 

@@ -156,7 +156,6 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (
         // eslint-disable-next-line react-hooks/rules-of-hooks
         const model = useModel();
         const modelJSON = model.toCells() as Cell[];
-        console.log(modelJSON);
         flowGraph.scroller.disableAutoResize();
         flowGraph.startBatch('update');
         flowGraph.resetCells(modelJSON);
@@ -194,13 +193,6 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(function (
         currentEditor,
       }}
     >
-      <Button
-        onClick={() => {
-          console.log(flowGraph);
-        }}
-      >
-        测试
-      </Button>
       <Layout
         flowGraph={flowGraph}
         SideBar={SideBar}

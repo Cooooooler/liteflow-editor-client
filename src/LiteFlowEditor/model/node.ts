@@ -52,8 +52,15 @@ export default abstract class ELNode {
   public startNode?: Node;
   // 当前操作符节点的结束节点
   public endNode?: Node;
+  public ids?: string;
+  public position?: { x: number; y: number };
   // 是否折叠
   collapsed: boolean = false;
+
+  protected constructor(ids?: string, position?: { x: number; y: number }) {
+    this.ids = ids;
+    this.position = position;
+  }
 
   /**
    * 在后面添加子节点

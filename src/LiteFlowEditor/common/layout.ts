@@ -72,7 +72,6 @@ function antvDagreLayout(flowGraph: Graph, cfg: any = {}): void {
       | undefined;
     if (cell) {
       const positionMes = cell.position()
-      console.log(positionMes)
       if (positionMes.x === 0 && positionMes.y === 0) {
         cell.position(node.x, node.y);
       }

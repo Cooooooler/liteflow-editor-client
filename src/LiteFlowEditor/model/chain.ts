@@ -195,7 +195,6 @@ export default class Chain extends ELNode {
    * @param index 指定位置：可以是索引，也可以是兄弟节点
    */
   public appendChild(newNode: ELNode, index?: number | ELNode): boolean {
-    console.log(newNode,'newNode')
     const result = super.appendChild(newNode, index as any);
     this.addWrapperIfPossible();
     return result;

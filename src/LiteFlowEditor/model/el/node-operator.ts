@@ -37,8 +37,6 @@ export default class NodeOperator extends ELNode {
   parent?: ELNode;
   id: string;
   node?: Node;
-  ids?: string;
-  position?: { x: number; y: number };
 
   constructor(
     parent?: ELNode,
@@ -48,13 +46,11 @@ export default class NodeOperator extends ELNode {
     ids?: string,
     position?: { x: number; y: number },
   ) {
-    super();
+    super(ids, position);
     this.parent = parent;
     this.type = type || NodeTypeEnum.COMMON;
     this.id = id || `Placeholder${Math.ceil(Math.random() * 10)}`;
     this.properties = properties;
-    this.ids = ids;
-    this.position = position;
   }
 
   /**

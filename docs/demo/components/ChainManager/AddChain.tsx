@@ -37,7 +37,6 @@ const ChainSettings: React.FC<IProps> = ({ value = {}, onChange, chains, disable
       onChange({ chainId, elJson });
       setIsModalOpen(false);
     } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
     }
   };
 
