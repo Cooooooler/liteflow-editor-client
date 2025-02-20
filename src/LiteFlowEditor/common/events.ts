@@ -7,9 +7,7 @@ export function findViewsFromPoint(flowGraph: Graph, x: number, y: number) {
     .map((cell) => flowGraph.findViewByCell(cell))
     .filter((view) => {
       if (view != null) {
-        let bBox = view.getBBox(view.container as any, {
-          target: flowGraph.view.stage,
-        });
+        let bBox = view.getBBox(view.container as any);
         if (bBox.height < 16) {
           bBox = Rectangle.create({
             x: bBox.x,

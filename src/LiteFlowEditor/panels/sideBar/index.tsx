@@ -141,7 +141,7 @@ const View: React.FC<any> = (props) => {
 };
 
 interface IPanelContentProps {
-  dnd: Addon.Dnd;
+  dnd: Dnd;
   cellTypes: LiteFlowNode[];
 }
 

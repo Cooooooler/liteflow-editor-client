@@ -72,7 +72,6 @@ const createFlowChart = (
       allowLoop: false,
       allowNode: false,
       allowEdge: false,
-      dangling: true,
       highlight: true,
       anchor: LITEFLOW_ANCHOR, // LITEFLOW_ANCHOR, // 'center',
       connectionPoint: 'bbox',
@@ -134,7 +133,7 @@ const createFlowChart = (
     // https://x6.antv.vision/zh/docs/tutorial/basic/history
     history: {
       enabled: true,
-      beforeAddCommand(event, args: any) {
+      beforeAddCommand(event:any, args: any) {
         if (args.options) {
           return args.options.ignore !== true;
         }
@@ -164,13 +163,6 @@ const createFlowChart = (
         },
       },
     },
-    // https://x6.antv.vision/zh/docs/tutorial/basic/scroller
-    scroller: {
-      enabled: true,
-      pageVisible: false,
-      pageBreak: false,
-      pannable: true,
-    },
     mousewheel: {
       enabled: true,
       minScale: MIN_ZOOM,
@@ -198,17 +190,15 @@ const createFlowChart = (
     },
   });
   flowGraph.use(
+    new Scroller({
+      enabled: true,
+      pannable: true,
+    }),
     new Selection({
       enabled: true,
     }),
     new Keyboard({
       enabled: true,
-    }),
-    new Scroller({
-      enabled: true,
-      pageVisible: true,
-      pageBreak: true,
-      pannable: true,
     }),
   );
   registerEvents(flowGraph);
