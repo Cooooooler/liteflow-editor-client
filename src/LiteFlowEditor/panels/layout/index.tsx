@@ -1,8 +1,8 @@
-import React from 'react';
 import { Graph } from '@antv/x6';
 import { SplitBox } from '@antv/x6-react-components';
-import { useGraphWrapper } from '../../hooks';
 import '@antv/x6-react-components/es/split-box/style/index.css';
+import React from 'react';
+import { useGraphWrapper } from '../../hooks';
 import styles from './index.module.less';
 
 interface ISubComponentProps {
