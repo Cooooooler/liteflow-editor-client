@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useReducer } from 'react';
 import { Graph } from '@antv/x6';
 import { Tabs } from 'antd';
+import React, { useEffect, useReducer, useState } from 'react';
+import NodeOperator from '../../model/el/node-operator';
+import ELNode from '../../model/node';
 import Basic from './basic';
+import styles from './index.module.less';
+import Outline from './outline';
 import {
   ComponentPropertiesEditor,
   ConditionPropertiesEditor,
 } from './properties';
-import Outline from './outline';
-import ELNode from '../../model/node';
-import NodeOperator from '../../model/el/node-operator';
-import styles from './index.module.less';
 
 const { TabPane } = Tabs;
 
@@ -59,14 +59,21 @@ const SettingBar: React.FC<IProps> = (props) => {
 
   return (
     <div className={styles.liteflowEditorSettingBarContainer}>
-      <Tabs defaultActiveKey={'properties'}>
-        <TabPane tab={'属性'} key={'properties'}>
-          {propertiesPanel}
-        </TabPane>
-        <TabPane tab={'结构树'} key={'outline'}>
-          <Outline flowGraph={flowGraph} />
-        </TabPane>
-      </Tabs>
+      <Tabs
+        defaultActiveKey={'properties'}
+        items={[
+          {
+            key: 'properties',
+            label: '属性',
+            children: propertiesPanel,
+          },
+          {
+            key: 'outline',
+            label: '结构树',
+            children: <Outline flowGraph={flowGraph} />,
+          },
+        ]}
+      />
     </div>
   );
 };

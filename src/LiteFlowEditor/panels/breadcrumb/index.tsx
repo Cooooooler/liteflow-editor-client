@@ -1,9 +1,9 @@
-import React, { useState, useReducer, useEffect } from 'react';
+import { HomeOutlined } from '@ant-design/icons';
 import { Graph } from '@antv/x6';
 import { Breadcrumb } from 'antd';
-import { HomeOutlined } from '@ant-design/icons';
-import ELNode from '../../model/node';
+import React, { useEffect, useReducer, useState } from 'react';
 import { getIconByType } from '../../cells';
+import ELNode from '../../model/node';
 import styles from './index.module.less';
 
 interface IProps {
@@ -51,26 +51,35 @@ const BreadcrumbPath: React.FC<IProps> = (props) => {
 
   return (
     <div className={styles.liteflowEditorBreadcrumb}>
-      <Breadcrumb>
-        <Breadcrumb.Item>
-          <HomeOutlined />
-        </Breadcrumb.Item>
-        {parents.map((elNodeModel: ELNode, index: number) => {
-          const icon = getIconByType(elNodeModel.type);
-          const handleClick = () => {
-            flowGraph.cleanSelection();
-            flowGraph.select(elNodeModel.getNodes());
-            setSelectedModel(elNodeModel);
-            handleSelectModel(elNodeModel);
-          };
-          return (
-            <Breadcrumb.Item key={index} onClick={handleClick}>
-              <img className={styles.liteflowEditorBreadcrumbIcon} src={icon} />
-              <span>{elNodeModel.type}</span>
-            </Breadcrumb.Item>
-          );
-        })}
-      </Breadcrumb>
+      <Breadcrumb
+        items={[
+          {
+            key: 'home',
+            title: <HomeOutlined />,
+          },
+          ...parents.map((elNodeModel: ELNode, index: number) => {
+            const icon = getIconByType(elNodeModel.type);
+            const handleClick = () => {
+              flowGraph.cleanSelection();
+              flowGraph.select(elNodeModel.getNodes());
+              setSelectedModel(elNodeModel);
+              handleSelectModel(elNodeModel);
+            };
+            return {
+              key: elNodeModel.ids ?? index,
+              title: (
+                <div onClick={handleClick} className={styles.breadcrumb_item}>
+                  <img
+                    className={styles.liteflowEditorBreadcrumbIcon}
+                    src={icon}
+                  />
+                  <span>{elNodeModel.type}</span>
+                </div>
+              ),
+            };
+          }),
+        ]}
+      />
     </div>
   );
 };

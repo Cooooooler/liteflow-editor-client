@@ -1,11 +1,11 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import styles from './index.module.less';
 
-import { Menu } from 'antd';
 import { Graph } from '@antv/x6';
+import { Menu } from 'antd';
 import useClickAway from '../../../hooks/useClickAway';
-import { nodeMenuConfig, blankMenuConfig } from './menuConfig';
+import { blankMenuConfig, nodeMenuConfig } from './menuConfig';
 
 interface IProps {
   x: number;
@@ -42,7 +42,7 @@ const FlowGraphContextMenu: React.FC<IProps> = (props) => {
     [flowGraph],
   );
   const onClickMenu = useCallback(
-    ({ key }) => {
+    ({ key }: { key: string }) => {
       const handlerMap = Helper.makeMenuHandlerMap(menuConfig);
       const handler = handlerMap[key];
       if (handler) {

@@ -1,4 +1,3 @@
-import { Graph, Node } from '@antv/x6';
 import '@antv/x6-react-shape';
 import { register } from '@antv/x6-react-shape';
 import React from 'react';
@@ -90,8 +89,7 @@ import { NodeBadge, NodeToolBar, NodeView } from '../components';
     },
     ...node,
   });
-})
-
+});
 
 export {
   And,

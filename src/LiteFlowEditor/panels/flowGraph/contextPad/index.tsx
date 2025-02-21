@@ -1,16 +1,16 @@
-import React, { useRef, useCallback } from 'react';
+import { Edge, Graph, Node } from '@antv/x6';
 import { Input } from 'antd';
-import { Edge, Node, Graph } from '@antv/x6';
-import useClickAway from '../../../hooks/useClickAway';
+import React, { useCallback, useRef } from 'react';
 import {
-  NODE_GROUP,
-  SEQUENCE_GROUP,
   BRANCH_GROUP,
   CONTROL_GROUP,
+  NODE_GROUP,
   OTHER_GROUP,
+  SEQUENCE_GROUP,
 } from '../../../cells';
-import ELBuilder from '../../../model/builder';
+import useClickAway from '../../../hooks/useClickAway';
 import { history } from '../../../hooks/useHistory';
+import ELBuilder from '../../../model/builder';
 import { INodeData } from '../../../model/node';
 import styles from './index.module.less';
 
@@ -25,7 +25,13 @@ interface IProps {
   flowGraph: Graph;
 }
 
-const groups = [NODE_GROUP, SEQUENCE_GROUP, BRANCH_GROUP, CONTROL_GROUP, OTHER_GROUP];
+const groups = [
+  NODE_GROUP,
+  SEQUENCE_GROUP,
+  BRANCH_GROUP,
+  CONTROL_GROUP,
+  OTHER_GROUP,
+];
 
 const FlowGraphContextPad: React.FC<IProps> = (props) => {
   const menuRef = useRef(null);
@@ -47,7 +53,7 @@ const FlowGraphContextPad: React.FC<IProps> = (props) => {
     [flowGraph],
   );
   const onClickMenu = useCallback(
-    (cellType) => {
+    (cellType: LiteFlowNode) => {
       if (edge) {
         let targetNode = edge.getTargetNode();
         let { model: targetModel } = targetNode?.getData<INodeData>() || {};

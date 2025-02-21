@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Collapse } from 'antd';
 import { Edge, Graph, Node } from '@antv/x6';
-import {Dnd} from '@antv/x6-plugin-dnd';
+import { Dnd } from '@antv/x6-plugin-dnd';
+import { Collapse } from 'antd';
 import classNames from 'classnames';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  NODE_GROUP,
-  SEQUENCE_GROUP,
   BRANCH_GROUP,
   CONTROL_GROUP,
-  OTHER_GROUP,
   IGroupItem,
+  NODE_GROUP,
+  OTHER_GROUP,
+  SEQUENCE_GROUP,
 } from '../../cells';
 import { findViewsFromPoint } from '../../common/events';
+import { history } from '../../hooks/useHistory';
 import ELBuilder from '../../model/builder';
 import { INodeData } from '../../model/node';
 import styles from './index.module.less';
-import { history } from '../../hooks/useHistory';
 
 const { Panel } = Collapse;
 
@@ -112,7 +112,13 @@ const SideBar: React.FC<ISideBarProps> = (props) => {
 
   // life
   useEffect(() => {
-    setGroups([SEQUENCE_GROUP, BRANCH_GROUP, CONTROL_GROUP, OTHER_GROUP, NODE_GROUP]);
+    setGroups([
+      SEQUENCE_GROUP,
+      BRANCH_GROUP,
+      CONTROL_GROUP,
+      OTHER_GROUP,
+      NODE_GROUP,
+    ]);
   }, [setGroups]);
 
   return (
@@ -120,13 +126,12 @@ const SideBar: React.FC<ISideBarProps> = (props) => {
       <Collapse
         className={styles.liteflowEditorSideBarCollapse}
         defaultActiveKey={['node', 'sequence', 'branch', 'control', 'other']}
-      >
-        {groups.map((group) => (
-          <Panel key={group.key} header={group.name}>
-            <PanelContent dnd={dnd} cellTypes={group.cellTypes} />
-          </Panel>
-        ))}
-      </Collapse>
+        items={groups.map((group) => ({
+          key: group.key,
+          label: group.name,
+          children: <PanelContent dnd={dnd} cellTypes={group.cellTypes} />,
+        }))}
+      />
     </div>
   );
 };

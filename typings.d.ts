@@ -15,7 +15,7 @@ declare module '*.svg' {
 // declare module 'cytoscape-klay';
 
 declare interface LiteFlowNode {
-  type: string;
+  type: NodeTypeEnum | ConditionTypeEnum;
   label: string;
   icon: string;
   shape?: string;
