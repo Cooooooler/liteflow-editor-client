@@ -17,18 +17,30 @@ importers:
       '@antv/x6':
         specifier: ^2.18.1
         version: 2.18.1
+      '@antv/x6-plugin-clipboard':
+        specifier: ^2.1.6
+        version: 2.1.6(@antv/x6@2.18.1)
       '@antv/x6-plugin-dnd':
         specifier: ^2.1.1
         version: 2.1.1(@antv/x6@2.18.1)
+      '@antv/x6-plugin-history':
+        specifier: ^2.2.4
+        version: 2.2.4(@antv/x6@2.18.1)
       '@antv/x6-plugin-keyboard':
         specifier: ^2.2.3
         version: 2.2.3(@antv/x6@2.18.1)
+      '@antv/x6-plugin-minimap':
+        specifier: ^2.0.7
+        version: 2.0.7(@antv/x6@2.18.1)
       '@antv/x6-plugin-scroller':
         specifier: ^2.0.10
         version: 2.0.10(@antv/x6@2.18.1)
       '@antv/x6-plugin-selection':
         specifier: ^2.2.2
         version: 2.2.2(@antv/x6@2.18.1)
+      '@antv/x6-plugin-snapline':
+        specifier: ^2.1.7
+        version: 2.1.7(@antv/x6@2.18.1)
       '@antv/x6-react-components':
         specifier: ^2.0.8
         version: 2.0.8(antd@5.24.1(date-fns@2.30.0)(moment@2.30.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -205,13 +217,28 @@ packages:
   '@antv/x6-geometry@2.0.5':
     resolution: {integrity: sha512-MId6riEQkxphBpVeTcL4ZNXL4lScyvDEPLyIafvWMcWNTGK0jgkK7N20XSzqt8ltJb0mGUso5s56mrk8ysHu2A==}
 
+  '@antv/x6-plugin-clipboard@2.1.6':
+    resolution: {integrity: sha512-roZPLnZx6PK8MBvee0QMo90fz/TXeF0WNe4EGin2NBq5M1I5XTWrYvA6N2XVIiWAAI67gjQeEE8TpkL7f8QdqA==}
+    peerDependencies:
+      '@antv/x6': ^2.x
+
   '@antv/x6-plugin-dnd@2.1.1':
     resolution: {integrity: sha512-v0szzik1RkadPDn4Qi5mOSaB2AeI78D40/YuCYbPVzplG+HydGsHwO3MLTgJPQ+R5n0eM0W5F850p1VfTOHR7g==}
     peerDependencies:
       '@antv/x6': ^2.x
 
+  '@antv/x6-plugin-history@2.2.4':
+    resolution: {integrity: sha512-9gHHvEW4Fla+1hxUV49zNgJyIMoV9CjVM52MrFgAJcvyRn1Kvxz4MfxiKlG+DEZUs+/zvfjl9pS6gJOd8laRkg==}
+    peerDependencies:
+      '@antv/x6': ^2.x
+
   '@antv/x6-plugin-keyboard@2.2.3':
     resolution: {integrity: sha512-pnCIC+mDyKKfkcDyLePfGxKVIqXBcldTgannITkHC1kc0IafRS1GMvzpvuDGrM5haRYd6Nwz8kjkJyHkJE4GPA==}
+    peerDependencies:
+      '@antv/x6': ^2.x
+
+  '@antv/x6-plugin-minimap@2.0.7':
+    resolution: {integrity: sha512-8zzESCx0jguFPCOKCA0gPFb6JmRgq81CXXtgJYe34XhySdZ6PB23I5Po062lNsEuTjTjnzli4lju8vvU+jzlGw==}
     peerDependencies:
       '@antv/x6': ^2.x
 
@@ -222,6 +249,11 @@ packages:
 
   '@antv/x6-plugin-selection@2.2.2':
     resolution: {integrity: sha512-s2gtR9Onlhr7HOHqyqg0d+4sG76JCcQEbvrZZ64XmSChlvieIPlC3YtH4dg1KMNhYIuBmBmpSum6S0eVTEiPQw==}
+    peerDependencies:
+      '@antv/x6': ^2.x
+
+  '@antv/x6-plugin-snapline@2.1.7':
+    resolution: {integrity: sha512-AsysoCb9vES0U2USNhEpYuO/W8I0aYfkhlbee5Kt4NYiMfQfZKQyqW/YjDVaS2pm38C1NKu1LdPVk/BBr4CasA==}
     peerDependencies:
       '@antv/x6': ^2.x
 
@@ -8910,7 +8942,15 @@ snapshots:
 
   '@antv/x6-geometry@2.0.5': {}
 
+  '@antv/x6-plugin-clipboard@2.1.6(@antv/x6@2.18.1)':
+    dependencies:
+      '@antv/x6': 2.18.1
+
   '@antv/x6-plugin-dnd@2.1.1(@antv/x6@2.18.1)':
+    dependencies:
+      '@antv/x6': 2.18.1
+
+  '@antv/x6-plugin-history@2.2.4(@antv/x6@2.18.1)':
     dependencies:
       '@antv/x6': 2.18.1
 
@@ -8919,11 +8959,19 @@ snapshots:
       '@antv/x6': 2.18.1
       mousetrap: 1.6.5
 
+  '@antv/x6-plugin-minimap@2.0.7(@antv/x6@2.18.1)':
+    dependencies:
+      '@antv/x6': 2.18.1
+
   '@antv/x6-plugin-scroller@2.0.10(@antv/x6@2.18.1)':
     dependencies:
       '@antv/x6': 2.18.1
 
   '@antv/x6-plugin-selection@2.2.2(@antv/x6@2.18.1)':
+    dependencies:
+      '@antv/x6': 2.18.1
+
+  '@antv/x6-plugin-snapline@2.1.7(@antv/x6@2.18.1)':
     dependencies:
       '@antv/x6': 2.18.1
 

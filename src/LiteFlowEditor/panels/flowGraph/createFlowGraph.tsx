@@ -1,13 +1,17 @@
-import { Cell, Graph, NodeView } from '@antv/x6';
+import { Cell, Graph } from '@antv/x6';
+import { Clipboard } from '@antv/x6-plugin-clipboard';
+import { History } from '@antv/x6-plugin-history';
 import { Keyboard } from '@antv/x6-plugin-keyboard';
+import { MiniMap } from '@antv/x6-plugin-minimap';
 import { Scroller } from '@antv/x6-plugin-scroller';
 import { Selection } from '@antv/x6-plugin-selection';
+import { Snapline } from '@antv/x6-plugin-snapline';
 import { Button } from 'antd';
 import { debounce } from 'lodash';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { MAX_ZOOM, MIN_ZOOM } from '../../constant';
-// import MiniMapSimpleNode from './miniMapSimpleNode';
+
 import {
   LITEFLOW_ANCHOR,
   LITEFLOW_ROUTER,
@@ -22,12 +26,11 @@ const createFlowChart = (
   const flowGraph = new Graph({
     autoResize: true,
     container,
-    rotating: false,
-    resizing: false,
     onEdgeLabelRendered: (args) => {
       const { edge, selectors, label } = args;
       const content = selectors.foContent as HTMLElement;
       if (content) {
+        const root = ReactDOM.createRoot(content);
         content.style.display = 'flex';
         content.style.alignItems = 'center';
         content.style.justifyContent = 'center';
@@ -43,7 +46,7 @@ const createFlowChart = (
               edge,
             });
           };
-          ReactDOM.render(
+          root.render(
             <Button
               size="small"
               onClick={handleOnClick}
@@ -51,7 +54,6 @@ const createFlowChart = (
             >
               +
             </Button>,
-            content,
           );
         } else {
           content.appendChild(
@@ -59,11 +61,7 @@ const createFlowChart = (
           );
         }
       }
-    },
-    // https://x6.antv.vision/zh/docs/tutorial/basic/clipboard
-    clipboard: {
-      enabled: true,
-      useLocalStorage: true,
+      return void 0;
     },
     // https://x6.antv.vision/zh/docs/tutorial/intermediate/connector
     connecting: {
@@ -109,70 +107,12 @@ const createFlowChart = (
     grid: {
       visible: true,
     },
-    // https://x6.antv.vision/zh/docs/tutorial/basic/snapline
-    snapline: {
-      enabled: true,
-      clean: 100,
-    },
-    // https://x6.antv.vision/zh/docs/tutorial/basic/keyboard
-    keyboard: {
-      enabled: true,
-      global: false,
-    },
-    // https://x6.antv.vision/zh/docs/tutorial/basic/history
-    history: {
-      enabled: true,
-      beforeAddCommand(event: any, args: any) {
-        if (args.options) {
-          return args.options.ignore !== true;
-        }
-      },
-    },
-    // https://x6.antv.vision/zh/docs/tutorial/basic/minimap
-    minimap: {
-      width: 150,
-      height: 150,
-      minScale: MIN_ZOOM,
-      maxScale: MAX_ZOOM,
-      enabled: true,
-      scalable: false,
-      container: miniMapContainer,
-      graphOptions: {
-        async: true,
-        getCellView(cell: Cell) {
-          if (cell.isNode()) {
-            return NodeView.registry.get('react-shape-view');
-            // return MiniMapSimpleNode;
-          }
-        },
-        createCellView(cell: Cell) {
-          if (cell.isEdge()) {
-            return null;
-          }
-        },
-      },
-    },
     mousewheel: {
       enabled: true,
       minScale: MIN_ZOOM,
       maxScale: MAX_ZOOM,
       modifiers: ['ctrl', 'meta'],
     },
-    // embedding: {
-    //   enabled: true,
-    //   findParent({ node }) {
-    //     const bbox = node.getBBox();
-    //     return this.getNodes().filter((grahpNode) => {
-    //       const nodeData = grahpNode.getData();
-    //       if (nodeData && nodeData.parent) {
-    //         const targetBBox = grahpNode.getBBox();
-    //         return bbox.isIntersectWithRect(targetBBox);
-    //       }
-    //       return false;
-    //     });
-    //   },
-    //   frontOnly: false,
-    // },
     interacting: {
       nodeMovable: true,
       edgeLabelMovable: false,
@@ -200,6 +140,47 @@ const createFlowChart = (
     .use(
       new Keyboard({
         enabled: true,
+        global: false,
+      }),
+    )
+    .use(
+      new Clipboard({
+        enabled: true,
+        useLocalStorage: true,
+      }),
+    )
+    .use(
+      new Snapline({
+        enabled: true,
+        clean: 100,
+      }),
+    )
+    .use(
+      new History({
+        enabled: true,
+        beforeAddCommand(event: any, args: any) {
+          if (args.options) {
+            return args.options.ignore !== true;
+          }
+        },
+      }),
+    )
+    .use(
+      new MiniMap({
+        width: 150,
+        height: 150,
+        minScale: MIN_ZOOM,
+        maxScale: MAX_ZOOM,
+        scalable: false,
+        container: miniMapContainer,
+        graphOptions: {
+          async: true,
+          createCellView(cell: Cell) {
+            if (cell.isEdge()) {
+              return null;
+            }
+          },
+        },
       }),
     );
   registerEvents(flowGraph);

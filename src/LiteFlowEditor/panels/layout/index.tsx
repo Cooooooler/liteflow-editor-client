@@ -1,7 +1,7 @@
 import { Graph } from '@antv/x6';
 import { SplitBox } from '@antv/x6-react-components';
 import '@antv/x6-react-components/es/split-box/style/index.css';
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useGraphWrapper } from '../../hooks';
 import styles from './index.module.less';
 
@@ -16,6 +16,7 @@ interface IProps {
   ToolBar: React.FC<ISubComponentProps>;
   SettingBar: React.FC<ISubComponentProps>;
   widgets?: React.FC[];
+  children: ReactNode;
 }
 
 const Layout: React.FC<IProps> = (props) => {
