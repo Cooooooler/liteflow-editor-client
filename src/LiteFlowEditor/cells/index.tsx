@@ -59,21 +59,17 @@ import { NodeBadge, NodeToolBar, NodeView } from '../components';
   Virtual,
   Chain,
 ].forEach((cell: LiteFlowNode) => {
-  // 注册AntV X6节点
   const { type, label, icon, node = {} } = cell;
-  Graph.registerNode(type, {
-    // primer: 'circle',
-    inherit: 'react-shape',
-    component(node: Node) {
-      return (
-        <NodeView node={node} icon={icon}>
-          <NodeBadge node={node} />
-          <NodeToolBar node={node} />
-        </NodeView>
-      );
-    },
+  register({
+    shape: type,
     width: NODE_WIDTH,
     height: NODE_HEIGHT,
+    component: ({ node }) => (
+      <NodeView node={node} icon={icon} label={label}>
+        <NodeBadge node={node} />
+        <NodeToolBar node={node} />
+      </NodeView>
+    ),
     attrs: {
       label: {
         refX: 0.5,
@@ -91,42 +87,6 @@ import { NodeBadge, NodeToolBar, NodeView } from '../components';
           breakWord: true,
         },
       },
-    },
-    ...node,
-  });
-});
-[
-  Start,
-  End,
-  Then,
-  When,
-  Common,
-  IntermediateEnd,
-  If,
-  Switch,
-  For,
-  While,
-  Iterator,
-  Catch,
-  And,
-  Or,
-  Not,
-  Virtual,
-  Chain,
-].forEach((cell: LiteFlowNode) => {
-  const { type, label, icon, node = {} } = cell;
-  register({
-    shape: type,
-    width: NODE_WIDTH,
-    height: NODE_HEIGHT,
-    component: ({ node }) => (
-      <NodeView node={node} icon={icon} label={label}>
-        <NodeBadge node={node} />
-        <NodeToolBar node={node} />
-      </NodeView>
-    ),
-    attrs: {
-      label
     },
     ...node,
   });

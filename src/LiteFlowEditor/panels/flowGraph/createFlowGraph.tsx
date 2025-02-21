@@ -109,17 +109,6 @@ const createFlowChart = (
     grid: {
       visible: true,
     },
-    // https://x6.antv.vision/zh/docs/tutorial/basic/selection
-    selecting: {
-      enabled: true,
-      rubberband: false, // 启用框选
-      movable: true,
-      multiple: true,
-      strict: true,
-      showNodeSelectionBox: true,
-      selectNodeOnMoved: true,
-      pointerEvents: 'none',
-    },
     // https://x6.antv.vision/zh/docs/tutorial/basic/snapline
     snapline: {
       enabled: true,
@@ -133,7 +122,7 @@ const createFlowChart = (
     // https://x6.antv.vision/zh/docs/tutorial/basic/history
     history: {
       enabled: true,
-      beforeAddCommand(event:any, args: any) {
+      beforeAddCommand(event: any, args: any) {
         if (args.options) {
           return args.options.ignore !== true;
         }
@@ -189,18 +178,30 @@ const createFlowChart = (
       edgeLabelMovable: false,
     },
   });
-  flowGraph.use(
-    new Scroller({
-      enabled: true,
-      pannable: true,
-    }),
-    new Selection({
-      enabled: true,
-    }),
-    new Keyboard({
-      enabled: true,
-    }),
-  );
+  flowGraph
+    .use(
+      new Scroller({
+        enabled: true,
+        pannable: true,
+      }),
+    )
+    .use(
+      new Selection({
+        enabled: true,
+        rubberband: false, // 启用框选
+        movable: true,
+        multiple: true,
+        strict: true,
+        showNodeSelectionBox: true,
+        selectNodeOnMoved: true,
+        pointerEvents: 'none',
+      }),
+    )
+    .use(
+      new Keyboard({
+        enabled: true,
+      }),
+    );
   registerEvents(flowGraph);
   registerShortcuts(flowGraph);
   return flowGraph;

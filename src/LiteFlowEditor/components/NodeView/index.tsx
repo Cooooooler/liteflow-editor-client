@@ -10,12 +10,13 @@ const NodeView: React.FC<{
   label: string;
   children: ReactNode;
 }> = (props) => {
-  const { icon, children, label } = props;
+  const { icon, children, label, node } = props;
+  const idText = (node.getAttrs()?.label.text as string) || label;
   return (
     <div className={classNames(styles.liteflowShapeWrapper)}>
       <img className={styles.liteflowShapeSvg} src={icon}></img>
       {children}
-      <div>{label}</div>
+      <div className={styles.liteflowShapeText}>{idText}</div>
     </div>
   );
 };
