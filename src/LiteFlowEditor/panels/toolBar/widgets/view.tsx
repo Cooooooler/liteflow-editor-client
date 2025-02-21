@@ -3,6 +3,7 @@ import { Graph } from '@antv/x6';
 import React from 'react';
 import { Modal } from 'antd';
 import JsonView from 'react-json-view';
+import styles from './index.module.less';
 
 import makeBtnWidget from './common/makeBtnWidget';
 import { useModel } from '../../../hooks';
@@ -22,14 +23,16 @@ const View: React.FC<IProps> = makeBtnWidget({
       closable: true,
       content: (
         // @ts-ignore
-        <JsonView
-          name={null}
-          collapsed={false}
-          enableClipboard={true}
-          displayDataTypes={false}
-          displayObjectSize={false}
-          src={JSON.parse(JSON.stringify(model.toJSON()))}
-        />
+        <div className={styles.modal_content}>
+          <JsonView
+            name={null}
+            collapsed={false}
+            enableClipboard={true}
+            displayDataTypes={false}
+            displayObjectSize={false}
+            src={JSON.parse(JSON.stringify(model.toJSON()))}
+          />
+        </div>
       ),
     });
     console.log(JSON.stringify(model.toJSON(), null, 2));
