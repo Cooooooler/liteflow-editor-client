@@ -1,36 +1,43 @@
-import React from 'react';
-import {Graph, Node} from '@antv/x6';
+import { Graph, Node } from '@antv/x6';
 import '@antv/x6-react-shape';
-import {ConditionTypeEnum, NODE_HEIGHT, NODE_TYPE_INTERMEDIATE_END, NODE_WIDTH, NodeTypeEnum,} from '../constant';
+import { register } from '@antv/x6-react-shape';
+import React from 'react';
+import {
+  ConditionTypeEnum,
+  NODE_HEIGHT,
+  NODE_TYPE_INTERMEDIATE_END,
+  NODE_WIDTH,
+  NodeTypeEnum,
+} from '../constant';
 /** AntV X6自定义节点 */
 // 开始 & 结束
-import {default as Start} from './start';
-import {default as End} from './end';
+import { default as End } from './end';
+import { default as Start } from './start';
 // 顺序：串行、并行
-import {default as Then} from './then';
-import {default as When} from './when';
-import {default as Common} from './common';
-import {default as IntermediateEnd} from './intermediate-end';
+import { default as Common } from './common';
+import { default as IntermediateEnd } from './intermediate-end';
+import { default as Then } from './then';
+import { default as When } from './when';
 // 分支：选择、条件
-import {default as Switch} from './switch';
-import {default as If} from './if';
+import { default as If } from './if';
+import { default as Switch } from './switch';
 // 循环：For、While
-import {default as For} from './for';
-import {default as While} from './while';
-import {default as Iterator} from './iterator';
+import { default as For } from './for';
+import { default as Iterator } from './iterator';
+import { default as While } from './while';
 // 捕获异常：Catch
-import {default as Catch} from './catch';
+import { default as Catch } from './catch';
 // 运算符：与或非
-import {default as And} from './and';
-import {default as Or} from './or';
-import {default as Not} from './not';
+import { default as And } from './and';
+import { default as Not } from './not';
+import { default as Or } from './or';
 // 子流程：Chain
-import {default as Chain} from './chain';
+import { default as Chain } from './chain';
 // 其他辅助节点：虚节点
-import {default as Virtual} from './virtual';
+import { default as Virtual } from './virtual';
 
 // AntV X6自定义节点的视图：使用React组件
-import {NodeBadge, NodeToolBar, NodeView} from '../components';
+import { NodeBadge, NodeToolBar, NodeView } from '../components';
 
 /** 注册自定义节点到AntV X6 */
 [
@@ -53,15 +60,15 @@ import {NodeBadge, NodeToolBar, NodeView} from '../components';
   Chain,
 ].forEach((cell: LiteFlowNode) => {
   // 注册AntV X6节点
-  const {type, label, icon, node = {}} = cell;
+  const { type, label, icon, node = {} } = cell;
   Graph.registerNode(type, {
     // primer: 'circle',
     inherit: 'react-shape',
     component(node: Node) {
       return (
         <NodeView node={node} icon={icon}>
-          <NodeBadge node={node}/>
-          <NodeToolBar node={node}/>
+          <NodeBadge node={node} />
+          <NodeToolBar node={node} />
         </NodeView>
       );
     },
@@ -88,16 +95,15 @@ import {NodeBadge, NodeToolBar, NodeView} from '../components';
     ...node,
   });
 });
-
-export {
+[
   Start,
   End,
-  Common,
   Then,
   When,
+  Common,
   IntermediateEnd,
-  Switch,
   If,
+  Switch,
   For,
   While,
   Iterator,
@@ -107,6 +113,44 @@ export {
   Not,
   Virtual,
   Chain,
+].forEach((cell: LiteFlowNode) => {
+  const { type, label, icon, node = {} } = cell;
+  register({
+    shape: type,
+    width: NODE_WIDTH,
+    height: NODE_HEIGHT,
+    component: ({ node }) => (
+      <NodeView node={node} icon={icon} label={label}>
+        <NodeBadge node={node} />
+        <NodeToolBar node={node} />
+      </NodeView>
+    ),
+    attrs: {
+      label
+    },
+    ...node,
+  });
+})
+
+
+export {
+  And,
+  Catch,
+  Chain,
+  Common,
+  End,
+  For,
+  If,
+  IntermediateEnd,
+  Iterator,
+  Not,
+  Or,
+  Start,
+  Switch,
+  Then,
+  Virtual,
+  When,
+  While,
 };
 
 export interface IGroupItem {
@@ -118,15 +162,15 @@ export interface IGroupItem {
 export const NODE_GROUP: IGroupItem = {
   key: 'node',
   name: '节点类',
-  cellTypes: [{...Common, type: NodeTypeEnum.COMMON, shape: Common.type}],
+  cellTypes: [{ ...Common, type: NodeTypeEnum.COMMON, shape: Common.type }],
 };
 
 export const SEQUENCE_GROUP: IGroupItem = {
   key: 'sequence',
   name: '顺序类',
   cellTypes: [
-    {...Then, type: ConditionTypeEnum.THEN, shape: Then.type},
-    {...When, type: ConditionTypeEnum.WHEN, shape: When.type},
+    { ...Then, type: ConditionTypeEnum.THEN, shape: Then.type },
+    { ...When, type: ConditionTypeEnum.WHEN, shape: When.type },
   ],
 };
 
@@ -134,8 +178,8 @@ export const BRANCH_GROUP: IGroupItem = {
   key: 'branch',
   name: '分支类',
   cellTypes: [
-    {...Switch, type: ConditionTypeEnum.SWITCH, shape: Switch.type},
-    {...If, type: ConditionTypeEnum.IF, shape: If.type},
+    { ...Switch, type: ConditionTypeEnum.SWITCH, shape: Switch.type },
+    { ...If, type: ConditionTypeEnum.IF, shape: If.type },
   ],
 };
 
@@ -143,9 +187,9 @@ export const CONTROL_GROUP: IGroupItem = {
   key: 'control',
   name: '循环类',
   cellTypes: [
-    {...For, type: ConditionTypeEnum.FOR, shape: For.type},
-    {...While, type: ConditionTypeEnum.WHILE, shape: While.type},
-    {...Iterator, type: ConditionTypeEnum.ITERATOR, shape: Iterator.type},
+    { ...For, type: ConditionTypeEnum.FOR, shape: For.type },
+    { ...While, type: ConditionTypeEnum.WHILE, shape: While.type },
+    { ...Iterator, type: ConditionTypeEnum.ITERATOR, shape: Iterator.type },
   ],
 };
 
@@ -153,11 +197,11 @@ export const OTHER_GROUP: IGroupItem = {
   key: 'other',
   name: '其他类',
   cellTypes: [
-    {...Catch, type: ConditionTypeEnum.CATCH, shape: Catch.type},
-    {...And, type: ConditionTypeEnum.AND, shape: And.type},
-    {...Or, type: ConditionTypeEnum.OR, shape: Or.type},
-    {...Not, type: ConditionTypeEnum.NOT, shape: Not.type},
-    {...Chain, type: ConditionTypeEnum.CHAIN, shape: Chain.type},
+    { ...Catch, type: ConditionTypeEnum.CATCH, shape: Catch.type },
+    { ...And, type: ConditionTypeEnum.AND, shape: And.type },
+    { ...Or, type: ConditionTypeEnum.OR, shape: Or.type },
+    { ...Not, type: ConditionTypeEnum.NOT, shape: Not.type },
+    { ...Chain, type: ConditionTypeEnum.CHAIN, shape: Chain.type },
   ],
 };
 
@@ -198,8 +242,8 @@ export const getIconByType = (nodeType: ConditionTypeEnum | NodeTypeEnum) => {
   }
 };
 
-export function getNodeShapeByType(nodeType: NodeTypeEnum) : string {
-  switch(nodeType) {
+export function getNodeShapeByType(nodeType: NodeTypeEnum): string {
+  switch (nodeType) {
     case NodeTypeEnum.BOOLEAN:
     case NodeTypeEnum.BOOLEAN_SCRIPT:
     case NodeTypeEnum.IF:
@@ -215,7 +259,7 @@ export function getNodeShapeByType(nodeType: NodeTypeEnum) : string {
     case NodeTypeEnum.WHILE_SCRIPT:
       return NodeTypeEnum.WHILE;
     case NodeTypeEnum.ITERATOR:
-        return NodeTypeEnum.ITERATOR;
+      return NodeTypeEnum.ITERATOR;
     case NodeTypeEnum.BREAK:
     case NodeTypeEnum.BREAK_SCRIPT:
       return NODE_TYPE_INTERMEDIATE_END;
