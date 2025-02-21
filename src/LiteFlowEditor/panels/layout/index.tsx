@@ -41,7 +41,7 @@ const Layout: React.FC<IProps> = (props) => {
 
   return (
     <div className={styles.liteflowEditorLayoutContainer}>
-      <div className={styles.liteflowEditorToolBar}>{toolBar}</div>
+      <div className={styles.liteflowEditorToolBar }>{toolBar}</div>
       <SplitBox
         split={'vertical'}
         minSize={50}
