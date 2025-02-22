@@ -195,6 +195,7 @@ export function parse({ parent, data }: ParseParameters): ELNode | undefined {
         data.properties,
         data?.ids,
         data?.position,
+        data?.highlight,
       );
   }
 }

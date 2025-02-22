@@ -102,7 +102,6 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(
       },
     };
     useImperativeHandle(ref, () => currentEditor as any);
-
     useEffect(() => {
       if (graphRef.current && miniMapRef.current) {
         const flowGraph = createFlowGraph(graphRef.current, miniMapRef.current);

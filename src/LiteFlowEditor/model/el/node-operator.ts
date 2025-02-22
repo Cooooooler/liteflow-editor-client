@@ -45,8 +45,9 @@ export default class NodeOperator extends ELNode {
     properties?: Properties,
     ids?: string,
     position?: { x: number; y: number },
+    highlight?: boolean,
   ) {
-    super(ids, position);
+    super(ids, position, highlight);
     this.parent = parent;
     this.type = type || NodeTypeEnum.COMMON;
     this.id = id || `Placeholder${Math.ceil(Math.random() * 10)}`;
@@ -79,6 +80,9 @@ export default class NodeOperator extends ELNode {
         shape: getNodeShapeByType(type),
         attrs: {
           label: { text: id },
+          body: {
+            highlight: this.highlight ?? false,
+          },
         },
         id: this.ids,
         ...(options || {}),

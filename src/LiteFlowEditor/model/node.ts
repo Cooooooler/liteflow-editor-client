@@ -54,12 +54,19 @@ export default abstract class ELNode {
   public endNode?: Node;
   public ids?: string;
   public position?: { x: number; y: number };
+  // 是否高亮
+  public highlight?: boolean;
   // 是否折叠
   collapsed: boolean = false;
 
-  protected constructor(ids?: string, position?: { x: number; y: number }) {
+  protected constructor(
+    ids?: string,
+    position?: { x: number; y: number },
+    highlight?: boolean,
+  ) {
     this.ids = ids;
     this.position = position;
+    this.highlight = highlight;
   }
 
   /**

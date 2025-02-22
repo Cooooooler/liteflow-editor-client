@@ -1,9 +1,7 @@
 import { defineConfig } from 'dumi';
 
 export default defineConfig({
-  favicons: [
-    'https://liteflow.cc/img/logo.png',
-  ],
+  favicons: ['https://liteflow.cc/img/logo.png'],
   outputPath: 'docs-dist',
   themeConfig: {
     name: 'liteflow',
@@ -16,6 +14,6 @@ Powered by self`,
     '/api': {
       target: 'http://127.0.0.1:10005/',
       changeOrigin: true,
-    }
-  }
+    },
+  },
 });
