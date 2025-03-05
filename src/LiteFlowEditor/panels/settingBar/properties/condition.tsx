@@ -1,14 +1,20 @@
-import React from 'react';
-import { Form, Input, Select } from 'antd';
-import { debounce } from 'lodash';
+import FormRender, { Schema, useForm } from 'form-render';
+import React, { useEffect, useMemo } from 'react';
+import { ConditionTypeEnum } from '../../../constant';
 import { history } from '../../../hooks/useHistory';
 import ELNode from '../../../model/node';
-import { ConditionTypeEnum } from '../../../constant';
 import styles from './index.module.less';
 
 interface IProps {
   model: ELNode;
 }
+
+type FormValuesType = {
+  any: boolean;
+  id: string;
+  tag: string;
+  maxWaitSeconds: string;
+};
 
 const WHEN_ANY_TRUE: boolean = true;
 const WHEN_ANY_FALSE: boolean = false;
@@ -17,44 +23,74 @@ const ConditionPropertiesEditor: React.FC<IProps> = (props) => {
   const { model } = props;
   const properties = model.getProperties();
 
-  const [form] = Form.useForm();
+  const schema = useMemo<Schema>(
+    () => ({
+      type: 'object',
+      properties: {
+        any: {
+          title: 'Any（any）',
+          type: 'string',
+          widget: 'select',
+          props: {
+            options: [
+              { label: '是', value: WHEN_ANY_TRUE },
+              { label: '否', value: WHEN_ANY_FALSE },
+            ],
+          },
+          hidden: model.type !== ConditionTypeEnum.WHEN,
+        },
+        id: {
+          title: '唯一标识（id）',
+          type: 'string',
+          widget: 'input',
+          required: true,
+        },
+        tag: {
+          title: '标签（tag）',
+          type: 'string',
+          widget: 'input',
+        },
+        maxWaitSeconds: {
+          title: '超时（maxWaitSeconds）',
+          type: 'string',
+          widget: 'input',
+        },
+      },
+    }),
+    [model],
+  );
 
-  const handleOnChange = debounce(async () => {
-    try {
-      const changedValues = await form.validateFields();
-      model.setProperties({ ...properties, ...changedValues });
-      history.push(undefined, { silent: true });
-    } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
-    }
-  }, 200);
+  const form = useForm();
+
+  const onFinish = (formData: FormValuesType) => {
+    console.log('formData:', formData);
+    const { id, ...rest } = formData;
+    model.id = id;
+    model.setProperties({ ...properties, ...rest });
+    history.push(undefined, { silent: true });
+    // history.push();
+    // 以下是对AntV X6视图层进行临时修改
+    const modelNode = model.getStartNode();
+    const originSize = modelNode.getSize();
+    modelNode.updateAttrs({ label: { text: id } }).setSize(originSize); // 解决由于文本修改导致的尺寸错误
+  };
+
+  useEffect(() => {
+    form.setValues({
+      ...properties,
+      id: model.id,
+    });
+  }, [model]);
 
   return (
     <div className={styles.liteflowEditorPropertiesEditorContainer}>
-      <Form
-        layout="vertical"
+      <FormRender
         form={form}
-        initialValues={{ ...properties }}
-        onValuesChange={handleOnChange}
-      >
-        {model.type === ConditionTypeEnum.WHEN && (
-          <Form.Item name="any" label="Any（any）">
-            <Select allowClear>
-              <Select.Option value={WHEN_ANY_TRUE}>是</Select.Option>
-              <Select.Option value={WHEN_ANY_FALSE}>否</Select.Option>
-            </Select>
-          </Form.Item>
-        )}
-        <Form.Item name="id" label="唯一标识（id）">
-          <Input allowClear />
-        </Form.Item>
-        <Form.Item name="tag" label="标签（tag）">
-          <Input allowClear />
-        </Form.Item>
-        <Form.Item name="maxWaitSeconds" label="超时(maxWaitSeconds)">
-          <Input allowClear/>
-        </Form.Item>
-      </Form>
+        schema={schema}
+        onFinish={onFinish}
+        maxWidth={360}
+        footer={true}
+      />
     </div>
   );
 };
