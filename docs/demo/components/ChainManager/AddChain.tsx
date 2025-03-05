@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import request from 'umi-request';
 import './index.less'
 
-type Chain = {
+export type Chain = {
   chainId: string;
   elJson: any;
 }

@@ -11,9 +11,11 @@ export default defineConfig({
 Powered by self`,
   },
   proxy: {
-    '/api': {
-      target: 'http://127.0.0.1:10005/',
+    '/lon': {
+      target: 'https://cloud-mgr.lonsun.cn/',
       changeOrigin: true,
+      pathRewrite: { '^/lon': '' },
     },
   },
+  define: { 'process.env.DUMI_APP_A': process.env.DUMI_APP_A },
 });

@@ -13,16 +13,17 @@ const ConnectStatus: React.FC = () => {
   const [status, setStatus] = useState<Status>(Status.pending);
 
   const syncServer = useCallback(() => {
-    return request(`/api/getChainList`, { method: 'GET' })
-    .then((data) => {
-      if (data && data.length) {
-        setStatus(Status.connected);
-      } else {
-        setStatus(Status.disconnected);
-      }
-    }).catch(() => {
-      setStatus(Status.disconnected);
-    })
+    // return request(`/api/getChainList`, { method: 'GET' })
+    // .then((data) => {
+    //   if (data && data.length) {
+    //     setStatus(Status.connected);
+    //   } else {
+    //     setStatus(Status.disconnected);
+    //   }
+    // }).catch(() => {
+    //   setStatus(Status.disconnected);
+    // })
+    return setStatus(Status.disconnected);
   }, [setStatus]);
 
   useEffect(() => {

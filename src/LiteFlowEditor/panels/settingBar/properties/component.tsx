@@ -1,6 +1,5 @@
-import { Checkbox, Form, Input } from 'antd';
-import { debounce } from 'lodash';
-import React from 'react';
+import FormRender, { Schema, useForm } from 'form-render';
+import React, { useEffect } from 'react';
 import { history } from '../../../hooks/useHistory';
 import ELNode from '../../../model/node';
 import styles from './index.module.less';
@@ -8,6 +7,13 @@ import styles from './index.module.less';
 interface IProps {
   model: ELNode;
 }
+
+type FormValuesType = {
+  id: string;
+  data: string;
+  tag: string;
+  maxWaitSeconds: string;
+};
 
 const handleConfig = (config: string[]) => {
   const obj: Record<string, boolean> = {};
@@ -31,68 +37,86 @@ const ComponentPropertiesEditor: React.FC<IProps> = (props) => {
   const { model } = props;
   const properties = model.getProperties();
 
-  const [form] = Form.useForm();
+  const schema: Schema = {
+    type: 'object',
+    properties: {
+      id: {
+        title: 'ID',
+        type: 'string',
+        widget: 'input',
+        required: true,
+      },
+      data: {
+        title: '参数（data）',
+        type: 'string',
+        widget: 'input',
+      },
+      tag: {
+        title: '标签（tag）',
+        type: 'string',
+        widget: 'input',
+      },
+      maxWaitSeconds: {
+        title: '超时（maxWaitSeconds）',
+        type: 'string',
+        widget: 'input',
+      },
+    },
+  };
 
-  const handleOnChange = debounce(async () => {
-    try {
-      const changedValues = await form.validateFields();
-      const { id, config, ...rest } = changedValues;
-      const { highlight = false } = handleConfig(config);
+  // const handleOnChange = debounce(async () => {
+  //   try {
+  //     const changedValues = await form.validateFields();
+  //     const { id, config, ...rest } = changedValues;
+  //     const { highlight = false } = handleConfig(config);
+  //
+  //     model.id = id;
+  //     model.highlight = highlight;
+  //     model.setProperties({ ...properties, ...rest });
+  //     history.push(undefined, { silent: true });
+  //     // history.push();
+  //     // 以下是对AntV X6视图层进行临时修改
+  //     const modelNode = model.getStartNode();
+  //     const originSize = modelNode.getSize();
+  //     const body = modelNode.getAttrs()?.body;
+  //     modelNode
+  //       .updateAttrs({ label: { text: id }, body: { ...body, highlight } })
+  //       .setSize(originSize); // 解决由于文本修改导致的尺寸错误
+  //   } catch (errorInfo) {
+  //     console.log('Failed:', errorInfo);
+  //   }
+  // }, 200);
+  const form = useForm();
 
-      model.id = id;
-      model.highlight = highlight;
-      model.setProperties({ ...properties, ...rest });
-      history.push(undefined, { silent: true });
-      // history.push();
-      // 以下是对AntV X6视图层进行临时修改
-      const modelNode = model.getStartNode();
-      const originSize = modelNode.getSize();
-      const body = modelNode.getAttrs()?.body;
-      modelNode
-        .updateAttrs({ label: { text: id }, body: { ...body, highlight } })
-        .setSize(originSize); // 解决由于文本修改导致的尺寸错误
-    } catch (errorInfo) {
-      console.log('Failed:', errorInfo);
-    }
-  }, 200);
+  const onFinish = (formData: FormValuesType) => {
+    console.log('formData:', formData);
+    const { id, ...rest } = formData;
+    model.id = id;
+    model.setProperties({ ...properties, ...rest });
+    history.push(undefined, { silent: true });
+    // history.push();
+    // 以下是对AntV X6视图层进行临时修改
+    const modelNode = model.getStartNode();
+    const originSize = modelNode.getSize();
+    modelNode.updateAttrs({ label: { text: id } }).setSize(originSize); // 解决由于文本修改导致的尺寸错误
+  };
 
-  const cellOptions = [{ label: 'highlight', value: 'highlight' }];
+  useEffect(() => {
+    form.setValues({
+      ...properties,
+      id: model.id,
+    });
+  }, [model]);
 
   return (
     <div className={styles.liteflowEditorPropertiesEditorContainer}>
-      <Form
-        layout="vertical"
+      <FormRender
         form={form}
-        initialValues={{
-          ...properties,
-          id: model.id,
-          config: handleConfigValue({ highlight: model.highlight ?? false }),
-        }}
-        onValuesChange={handleOnChange}
-        // onBlur={handleOnChange}
-      >
-        <Form.Item name="id" label="ID">
-          <Input allowClear />
-        </Form.Item>
-        <Form.Item name="data" label="参数（data）">
-          <Input allowClear />
-        </Form.Item>
-        <Form.Item name="tag" label="标签（tag）">
-          <Input allowClear />
-        </Form.Item>
-        <Form.Item name="maxWaitSeconds" label="超时(maxWaitSeconds)">
-          <Input allowClear />
-        </Form.Item>
-        <Form.Item name="config" label="节点配置">
-          <Checkbox.Group>
-            {cellOptions.map(({ label, value }) => (
-              <Checkbox key={value} value={value}>
-                {label}
-              </Checkbox>
-            ))}
-          </Checkbox.Group>
-        </Form.Item>
-      </Form>
+        schema={schema}
+        onFinish={onFinish}
+        maxWidth={360}
+        footer={true}
+      />
     </div>
   );
 };

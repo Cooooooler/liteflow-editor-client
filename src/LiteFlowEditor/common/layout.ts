@@ -98,8 +98,9 @@ function fineTuneLayer(flowGraph: Graph) {
       //   return;
       // }
       // visited[next.id] = true;
-      const {y} = next.position();
-      next.position(begin[0] + layer * (ranksep + nodeSize + 40), y);
+
+      // const {y} = next.position();
+      // next.position(begin[0] + layer * (ranksep + nodeSize + 40), y);
 
       const neighbors = flowGraph.getNeighbors(next, {
         outgoing: true,
