@@ -1,8 +1,10 @@
-import FormRender, { Schema, useForm } from 'form-render';
-import React, { useEffect, useMemo } from 'react';
+import { useAsyncEffect } from 'ahooks';
+import FormRender, { Schema, useForm, WatchProperties } from 'form-render';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ConditionTypeEnum } from '../../../constant';
 import { history } from '../../../hooks/useHistory';
 import ELNode from '../../../model/node';
+import { getCmpList } from '../../../services/api';
 import styles from './index.module.less';
 
 interface IProps {
@@ -21,6 +23,7 @@ const WHEN_ANY_FALSE: boolean = false;
 
 const ConditionPropertiesEditor: React.FC<IProps> = (props) => {
   const { model } = props;
+  const [cmpList, setCmpList] = useState<any[]>([]);
   const properties = model.getProperties();
 
   const schema = useMemo<Schema>(
@@ -48,7 +51,14 @@ const ConditionPropertiesEditor: React.FC<IProps> = (props) => {
         tag: {
           title: '标签（tag）',
           type: 'string',
-          widget: 'input',
+          widget: 'select',
+          props: {
+            options: cmpList.map((item) => ({
+              label: item?.cmpName,
+              value: item?.cmpId,
+            })),
+          },
+          required: true,
         },
         maxWaitSeconds: {
           title: '超时（maxWaitSeconds）',
@@ -57,13 +67,21 @@ const ConditionPropertiesEditor: React.FC<IProps> = (props) => {
         },
       },
     }),
-    [model],
+    [model, cmpList],
   );
 
   const form = useForm();
 
+  const watch: WatchProperties = {
+    tag: (val: string) => {
+      form.setValueByPath(
+        'id',
+        cmpList.find((item) => item.cmpId === val)?.cmpId,
+      );
+    },
+  };
+
   const onFinish = (formData: FormValuesType) => {
-    console.log('formData:', formData);
     const { id, ...rest } = formData;
     model.id = id;
     model.setProperties({ ...properties, ...rest });
@@ -77,10 +95,24 @@ const ConditionPropertiesEditor: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     form.setValues({
+      data: '',
+      tag: '',
+      maxWaitSeconds: '',
       ...properties,
       id: model.id,
     });
-  }, [model]);
+  }, [model.id]);
+
+  const getCmpListCallBack = useCallback(async () => {
+    const { data } = await getCmpList({ type: model.type });
+    if (data && data.length) {
+      setCmpList(data);
+    }
+  }, [setCmpList]);
+
+  useAsyncEffect(async () => {
+    await getCmpListCallBack();
+  }, []);
 
   return (
     <div className={styles.liteflowEditorPropertiesEditorContainer}>
@@ -90,6 +122,7 @@ const ConditionPropertiesEditor: React.FC<IProps> = (props) => {
         onFinish={onFinish}
         maxWidth={360}
         footer={true}
+        watch={watch}
       />
     </div>
   );

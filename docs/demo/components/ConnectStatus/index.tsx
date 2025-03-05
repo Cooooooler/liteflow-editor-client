@@ -1,33 +1,35 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Tag } from 'antd'
-import request from 'umi-request';
-import './index.less'
+import { useAsyncEffect } from 'ahooks';
+import { Tag } from 'antd';
+import React, { useCallback, useState } from 'react';
+import { getChainPage } from '../../../../src/LiteFlowEditor/services/api';
+import './index.less';
 
 enum Status {
   connected = 'success',
   disconnected = 'error',
-  pending = 'processing'
+  pending = 'processing',
 }
 
 const ConnectStatus: React.FC = () => {
   const [status, setStatus] = useState<Status>(Status.pending);
 
-  const syncServer = useCallback(() => {
-    // return request(`/api/getChainList`, { method: 'GET' })
-    // .then((data) => {
-    //   if (data && data.length) {
-    //     setStatus(Status.connected);
-    //   } else {
-    //     setStatus(Status.disconnected);
-    //   }
-    // }).catch(() => {
-    //   setStatus(Status.disconnected);
-    // })
-    return setStatus(Status.disconnected);
+  // @ts-ignore
+  const syncServer = useCallback(async () => {
+    const {
+      data: { data },
+    } = await getChainPage().catch(() => {
+      setStatus(Status.disconnected);
+    });
+    if (data && data.length) {
+      setStatus(Status.connected);
+    } else {
+      setStatus(Status.disconnected);
+    }
   }, [setStatus]);
 
-  useEffect(() => {
-    syncServer();
+  // @ts-ignore
+  useAsyncEffect(async () => {
+    await syncServer();
   }, []);
 
   let tagText = '服务器连接失败';
@@ -38,10 +40,10 @@ const ConnectStatus: React.FC = () => {
     tagText = '服务器连接中';
   }
   return (
-    <span className='connect-status-container'>
+    <span className="connect-status-container">
       <Tag color={status}>{tagText}</Tag>
     </span>
-  )
+  );
 };
 
 export default ConnectStatus;

@@ -7,10 +7,16 @@
     "jsx": "react",
     "baseUrl": "./",
     "paths": {
-      "@@/*": [".dumi/tmp/*"],
-      "liteflow-editor": ["src"],
-      "liteflow-editor/*": ["src/*", "*"]
+      "@@/*": [
+        ".dumi/tmp/*"
+      ]
+      //      "liteflow-editor": ["src"],
+      //      "liteflow-editor/*": ["src/*", "*"]
     }
   },
-  "include": [".dumirc.ts", "typings.d.ts", "src/**/*"]
+  "include": [
+    ".dumirc.ts",
+    "typings.d.ts",
+    "src/**/*"
+  ]
 }

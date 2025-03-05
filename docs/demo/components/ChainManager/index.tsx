@@ -1,26 +1,28 @@
 import { DeleteOutlined, SaveOutlined } from '@ant-design/icons';
 import { useAsyncEffect } from 'ahooks';
 import { Button, Modal, Select, Tooltip } from 'antd';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { FC, useCallback, useContext, useState } from 'react';
 import request from 'umi-request';
 import { GraphContext } from '../../../../src/index';
-import getCmpList from '../../../../src/LiteFlowEditor/services/api';
+import { getChainPage } from '../../../../src/LiteFlowEditor/services/api';
 import AddChain, { Chain } from './AddChain';
 import './index.less';
 
-const ChainManager: React.FC = () => {
+const ChainManager: FC = () => {
   const [chains, setChains] = useState<Array<Chain>>([]);
   const [currentChain, setCurrentChain] = useState<Chain>();
 
   const getChainList = useCallback(async () => {
-    const data = await getCmpList();
+    const {
+      data: { data },
+    } = await getChainPage();
     if (data && data.length) {
       setChains(data);
     }
   }, [setChains]);
 
   useAsyncEffect(async () => {
-    // await getChainList();
+    await getChainList();
   }, []);
 
   const { currentEditor } = useContext<any>(GraphContext);
@@ -96,9 +98,9 @@ const ChainManager: React.FC = () => {
         value={currentChain?.chainId}
         placeholder="请选择接口数据"
         style={{ width: 200 }}
-        options={chains.map(({ chainId }: Chain) => ({
-          label: chainId,
-          value: chainId,
+        options={chains.map(({ chainDesc, id }) => ({
+          label: chainDesc,
+          value: id,
         }))}
         onChange={handleOnChange}
       />

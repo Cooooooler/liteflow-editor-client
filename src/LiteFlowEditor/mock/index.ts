@@ -6,7 +6,7 @@ export default {
     type: ConditionTypeEnum.THEN,
     children: [
       { type: NodeTypeEnum.COMMON, id: 'a', properties: { tag: 'dog' } },
-      { type: NodeTypeEnum.COMMON, id: 'b', highlight: true },
+      { type: NodeTypeEnum.COMMON, id: 'b' },
       { type: NodeTypeEnum.COMMON, id: 'c' },
       { type: NodeTypeEnum.COMMON, id: 'd' },
     ],

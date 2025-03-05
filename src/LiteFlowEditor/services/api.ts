@@ -1,7 +1,7 @@
 import requestController from './request_controller';
 
-const getCmpList = async (params?: any) => {
-  return await requestController(
+export const getCmpList =  (params?: any) => {
+  return  requestController(
     '/lon/api/v2/aiqa/chat/cmpManager/getCmpList',
     {
       method: 'GET',
@@ -10,4 +10,9 @@ const getCmpList = async (params?: any) => {
   );
 };
 
-export default getCmpList;
+export const getChainPage = (data?: any) => {
+  return  requestController('/lon/api/v2/aiqa/mgr/liteflowChain/getPage', {
+    method: 'POST',
+    data: data ?? {},
+  });
+};

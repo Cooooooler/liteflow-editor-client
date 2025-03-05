@@ -1,7 +1,9 @@
-import FormRender, { Schema, useForm } from 'form-render';
-import React, { useEffect } from 'react';
+import { useAsyncEffect } from 'ahooks';
+import FormRender, { Schema, useForm, WatchProperties } from 'form-render';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { history } from '../../../hooks/useHistory';
 import ELNode from '../../../model/node';
+import { getCmpList } from '../../../services/api';
 import styles from './index.module.less';
 
 interface IProps {
@@ -35,34 +37,45 @@ const handleConfigValue = (config: Record<string, boolean>) => {
 
 const ComponentPropertiesEditor: React.FC<IProps> = (props) => {
   const { model } = props;
+  const [cmpList, setCmpList] = useState<any[]>([]);
   const properties = model.getProperties();
 
-  const schema: Schema = {
-    type: 'object',
-    properties: {
-      id: {
-        title: 'ID',
-        type: 'string',
-        widget: 'input',
-        required: true,
+  const schema: Schema = useMemo(
+    () => ({
+      type: 'object',
+      properties: {
+        id: {
+          title: 'ID',
+          type: 'string',
+          widget: 'input',
+          required: true,
+        },
+        data: {
+          title: '参数（data）',
+          type: 'string',
+          widget: 'input',
+        },
+        tag: {
+          title: '标签（tag）',
+          type: 'string',
+          widget: 'select',
+          props: {
+            options: cmpList.map((item) => ({
+              label: item?.cmpName,
+              value: item?.cmpId,
+            })),
+          },
+          required: true,
+        },
+        maxWaitSeconds: {
+          title: '超时（maxWaitSeconds）',
+          type: 'string',
+          widget: 'input',
+        },
       },
-      data: {
-        title: '参数（data）',
-        type: 'string',
-        widget: 'input',
-      },
-      tag: {
-        title: '标签（tag）',
-        type: 'string',
-        widget: 'input',
-      },
-      maxWaitSeconds: {
-        title: '超时（maxWaitSeconds）',
-        type: 'string',
-        widget: 'input',
-      },
-    },
-  };
+    }),
+    [cmpList],
+  );
 
   // const handleOnChange = debounce(async () => {
   //   try {
@@ -88,8 +101,16 @@ const ComponentPropertiesEditor: React.FC<IProps> = (props) => {
   // }, 200);
   const form = useForm();
 
+  const watch: WatchProperties = {
+    tag: (val: string) => {
+      form.setValueByPath(
+        'id',
+        cmpList.find((item) => item.cmpId === val)?.cmpId,
+      );
+    },
+  };
+
   const onFinish = (formData: FormValuesType) => {
-    console.log('formData:', formData);
     const { id, ...rest } = formData;
     model.id = id;
     model.setProperties({ ...properties, ...rest });
@@ -103,10 +124,25 @@ const ComponentPropertiesEditor: React.FC<IProps> = (props) => {
 
   useEffect(() => {
     form.setValues({
+      data: '',
+      tag: '',
+      maxWaitSeconds: '',
       ...properties,
       id: model.id,
     });
-  }, [model]);
+  }, [model.id]);
+
+  const getCmpListCallBack = useCallback(async () => {
+    const { data } = await getCmpList({ type: model.type });
+    console.log(data);
+    if (data && data.length) {
+      setCmpList(data);
+    }
+  }, [setCmpList]);
+
+  useAsyncEffect(async () => {
+    await getCmpListCallBack();
+  }, []);
 
   return (
     <div className={styles.liteflowEditorPropertiesEditorContainer}>
@@ -116,9 +152,9 @@ const ComponentPropertiesEditor: React.FC<IProps> = (props) => {
         onFinish={onFinish}
         maxWidth={360}
         footer={true}
+        watch={watch}
       />
     </div>
   );
 };
-
 export default ComponentPropertiesEditor;
