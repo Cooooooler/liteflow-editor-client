@@ -15,12 +15,10 @@ const ConnectStatus: React.FC = () => {
 
   // @ts-ignore
   const syncServer = useCallback(async () => {
-    const {
-      data: { data },
-    } = await getChainPage().catch(() => {
+    const res = await getChainPage().catch(() => {
       setStatus(Status.disconnected);
     });
-    if (data && data.length) {
+    if (res?.data?.data && res?.data?.data.length) {
       setStatus(Status.connected);
     } else {
       setStatus(Status.disconnected);

@@ -5,7 +5,7 @@ import { Context, createContext, RefObject } from 'react';
  * graph: Graph实例
  * graphWrapper: Graph的容器
  */
-interface IGraphContext {
+export interface IGraphContext {
   model: any;
   graph: Graph;
   graphWrapper: RefObject<HTMLDivElement>;

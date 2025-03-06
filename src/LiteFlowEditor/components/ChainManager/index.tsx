@@ -3,10 +3,12 @@ import { useAsyncEffect } from 'ahooks';
 import { Button, Modal, Select, Tooltip } from 'antd';
 import React, { FC, useCallback, useContext, useState } from 'react';
 import request from 'umi-request';
-import { GraphContext } from '../../../../src/index';
-import { getChainPage } from '../../../../src/LiteFlowEditor/services/api';
+import { GraphContext, useModel } from '../../../../src/index';
+import { getChainById, getChainPage, updateChain } from '../../services/api';
+import { handleDesc, safeParse, safeStringify } from '../../utils';
 import AddChain, { Chain } from './AddChain';
 import './index.less';
+import { IGraphContext } from 'src/LiteFlowEditor/context/GraphContext';
 
 const ChainManager: FC = () => {
   const [chains, setChains] = useState<Array<Chain>>([]);
@@ -25,29 +27,21 @@ const ChainManager: FC = () => {
     await getChainList();
   }, []);
 
-  const { currentEditor } = useContext<any>(GraphContext);
-  const handleOnChange = (chainId: string) => {
-    setCurrentChain(chains.find((chain) => chain.chainId === chainId));
-    request(`/api/getChainById?chainId=${chainId}`, { method: 'GET' }).then(
-      (data) => {
-        if (data?.elJson) {
-          currentEditor.fromJSON(data.elJson);
-        }
-      },
-    );
+  const { currentEditor } = useContext<IGraphContext>(GraphContext);
+  const handleOnChange = async (id: number) => {
+    setCurrentChain(chains.find((chain) => chain.id === id));
+    const { data } = await getChainById({ id });
+    const chainDsl = safeParse(data?.chainDsl);
+    currentEditor.fromJSON(chainDsl);
   };
 
-  const handleSave = () => {
-    request(`/api/updateChain`, {
-      method: 'POST',
-      data: { ...currentChain, elJson: currentEditor.toJSON() },
-    }).then((data) => {
-      if (data.code === 'S') {
-        Modal.success({ title: '操作成功', content: data.message });
-      } else {
-        Modal.error({ title: '操作失败', content: data.message });
-      }
+  const handleSave = async () => {
+    const res = await updateChain({
+      ...currentChain,
+      chainDsl: safeStringify(currentEditor.toJSON()),
+      elData: useModel().toEL(' '),
     });
+    handleDesc(res);
   };
 
   const handleDelete = () => {
@@ -95,7 +89,7 @@ const ChainManager: FC = () => {
   return (
     <div className="chain-manager-wrapper">
       <Select
-        value={currentChain?.chainId}
+        value={currentChain?.id}
         placeholder="请选择接口数据"
         style={{ width: 200 }}
         options={chains.map(({ chainDesc, id }) => ({
@@ -109,7 +103,7 @@ const ChainManager: FC = () => {
           type="primary"
           className="chain-manager-save-btn"
           onClick={handleSave}
-          disabled={!chains.length || !currentChain?.chainId}
+          disabled={!chains.length || !currentChain?.id}
         >
           <SaveOutlined /> 保存
         </Button>
@@ -120,7 +114,7 @@ const ChainManager: FC = () => {
           danger
           className="chain-manager-delete-btn"
           onClick={handleDelete}
-          disabled={!chains.length || !currentChain?.chainId}
+          disabled={!chains.length || !currentChain?.id}
         >
           <DeleteOutlined /> 删除
         </Button>

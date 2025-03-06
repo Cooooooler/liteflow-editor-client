@@ -4,12 +4,14 @@ import React, {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
 import createFlowGraph from './panels/flowGraph/createFlowGraph';
 // import NodeEditorModal from './panels/flowGraph/nodeEditorModal';
 import { forceLayout } from './common/layout';
+import { ChainManager, ConnectStatus } from './components';
 import { MIN_ZOOM } from './constant';
 import GraphContext from './context/GraphContext';
 import { useModel } from './hooks';
@@ -77,6 +79,12 @@ const defaultPadInfo: IPadInfo = {
 const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(
   function (props, ref) {
     const { className, onReady, widgets, children } = props;
+
+    const widgetList = useMemo(
+      () => widgets || [ConnectStatus, ChainManager],
+      [widgets],
+    );
+
     const wrapperRef = useRef<HTMLDivElement>(null);
     const graphRef = useRef<HTMLDivElement>(null);
     const miniMapRef = useRef<HTMLDivElement>(null);
@@ -191,7 +199,7 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(
           SideBar={SideBar}
           ToolBar={ToolBar}
           SettingBar={SettingBar}
-          widgets={widgets}
+          widgets={widgetList}
         >
           <div
             className={classNames(styles.liteflowEditorContainer, className)}
