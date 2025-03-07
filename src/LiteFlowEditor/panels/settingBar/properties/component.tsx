@@ -134,7 +134,6 @@ const ComponentPropertiesEditor: React.FC<IProps> = (props) => {
 
   const getCmpListCallBack = useCallback(async () => {
     const { data } = await getCmpList({ type: model.type });
-    console.log(data);
     if (data && data.length) {
       setCmpList(data);
     }

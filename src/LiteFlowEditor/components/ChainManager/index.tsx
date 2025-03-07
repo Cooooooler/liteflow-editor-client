@@ -1,18 +1,34 @@
 import { DeleteOutlined, SaveOutlined } from '@ant-design/icons';
 import { useAsyncEffect } from 'ahooks';
 import { Button, Modal, Select, Tooltip } from 'antd';
+import { createStyles } from 'antd-style';
 import React, { FC, useCallback, useContext, useState } from 'react';
-import request from 'umi-request';
-import { GraphContext, useModel } from '../../../../src/index';
-import { getChainById, getChainPage, updateChain } from '../../services/api';
-import { handleDesc, safeParse, safeStringify } from '../../utils';
-import AddChain, { Chain } from './AddChain';
-import './index.less';
 import { IGraphContext } from 'src/LiteFlowEditor/context/GraphContext';
+import { GraphContext, useModel } from '../../../../src/index';
+import {
+  deleteChain,
+  getChainById,
+  getChainPage,
+  updateChain,
+} from '../../services/api';
+import { handleDesc, safeParse, safeStringify } from '../../utils';
+import { LoadingButton } from '../LoadingButton';
+import AddChain, { Chain } from './AddChain';
+
+const useStyles = createStyles(({ token, css }) => {
+  return {
+    wrapper: css`
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    `,
+  };
+});
 
 const ChainManager: FC = () => {
   const [chains, setChains] = useState<Array<Chain>>([]);
   const [currentChain, setCurrentChain] = useState<Chain>();
+  const { styles } = useStyles();
 
   const getChainList = useCallback(async () => {
     const {
@@ -48,46 +64,18 @@ const ChainManager: FC = () => {
     Modal.confirm({
       title: '操作确认',
       content: '请确认是否删除当前记录？',
-      onOk() {
-        return request(`/api/deleteChain`, {
-          method: 'POST',
-          data: { ...currentChain },
-        }).then((data) => {
-          if (data.code === 'S') {
-            Modal.success({ title: '操作成功', content: data.message });
-            setCurrentChain(undefined);
-            setChains(chains.filter((chain) => chain !== currentChain));
-          } else {
-            Modal.error({ title: '操作失败', content: data.message });
-          }
-        });
+      async onOk() {
+        const res = await deleteChain({ ids: [currentChain?.id] });
+        handleDesc(res);
+        setCurrentChain(undefined);
+        currentEditor.fromJSON({});
+        await getChainList();
       },
     });
   };
 
-  const handleAddChain = (newChain?: Chain) => {
-    if (!newChain) {
-      // 创建空白画布
-      currentEditor.fromJSON({});
-      return;
-    }
-    currentEditor.fromJSON(newChain.elJson);
-    request(`/api/createChain`, {
-      method: 'POST',
-      data: { ...newChain },
-    }).then((data) => {
-      if (data.code === 'S') {
-        Modal.success({ title: '操作成功', content: data.message });
-        setChains([...chains, newChain]);
-        setCurrentChain(newChain);
-      } else {
-        Modal.error({ title: '操作失败', content: data.message });
-      }
-    });
-  };
-
   return (
-    <div className="chain-manager-wrapper">
+    <div className={styles.wrapper}>
       <Select
         value={currentChain?.id}
         placeholder="请选择接口数据"
@@ -98,17 +86,20 @@ const ChainManager: FC = () => {
         }))}
         onChange={handleOnChange}
       />
-      <Tooltip title="保存当前修改" placement="bottom">
-        <Button
-          type="primary"
-          className="chain-manager-save-btn"
-          onClick={handleSave}
-          disabled={!chains.length || !currentChain?.id}
-        >
-          <SaveOutlined /> 保存
-        </Button>
+      <Tooltip title="保存当前修改">
+        <>
+          <LoadingButton
+            type="primary"
+            className="chain-manager-save-btn"
+            requestApi={handleSave}
+            disabled={!chains.length || !currentChain?.id}
+            icon={<SaveOutlined />}
+          >
+            保存
+          </LoadingButton>
+        </>
       </Tooltip>
-      <Tooltip title="删除当前记录" placement="bottom">
+      <Tooltip title="删除当前记录">
         <Button
           type="primary"
           danger
@@ -119,7 +110,7 @@ const ChainManager: FC = () => {
           <DeleteOutlined /> 删除
         </Button>
       </Tooltip>
-      <AddChain onChange={handleAddChain} chains={chains} />
+      <AddChain onChange={getChainList} className="chain-manager-add-btn" />
     </div>
   );
 };

@@ -43,3 +43,13 @@ export const updateChain = (data?: any) => {
     },
   );
 };
+
+export const deleteChain = (data?: any) => {
+  return requestController(
+    '/lon/api/v2/aiqa/mgr/liteflowChain/deleteLiteflowChain',
+    {
+      method: 'POST',
+      data: data ?? {},
+    },
+  );
+};

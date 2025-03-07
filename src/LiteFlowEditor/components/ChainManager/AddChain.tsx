@@ -1,6 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Modal, Tooltip } from 'antd';
-import classNames from 'classnames';
 import FormRender, { Schema, useForm } from 'form-render';
 import React, { useState } from 'react';
 import { addChain } from '../../services/api';
@@ -16,23 +15,12 @@ export type Chain = {
 };
 
 interface IProps {
-  value?: Chain;
-  onChange: (newChain?: Chain) => void;
+  className?: string;
   disabled?: boolean;
-  chains: Array<{
-    id: number;
-    chainDesc: string;
-    chainId: string;
-    elJson: any;
-  }>;
+  onChange: (...args: any[]) => Promise<void>;
 }
 
-const ChainSettings: React.FC<IProps> = ({
-  value = {},
-  onChange,
-  chains,
-  disabled,
-}) => {
+const ChainSettings: React.FC<IProps> = ({ disabled, onChange, className }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -70,11 +58,10 @@ const ChainSettings: React.FC<IProps> = ({
       const res = await addChain({
         chainDesc,
         chainName,
-      }).catch((e) => {
-        console.log(e);
       });
       if (handleDesc(res)) {
         setIsModalOpen(false);
+        await onChange();
       }
     }
   };
@@ -83,43 +70,32 @@ const ChainSettings: React.FC<IProps> = ({
     setIsModalOpen(false);
   };
 
-  const handleEmptyCanvas = () => {
-    setIsModalOpen(false);
-    onChange(undefined);
-  };
-
   return (
-    <React.Fragment>
-      <Tooltip title="新增" placement="bottom">
+    <>
+      <Tooltip title="新增">
         <Button
           type="primary"
           onClick={showModal}
-          className="chain-manager-add-btn"
+          className={className}
           disabled={disabled}
+          icon={<PlusOutlined />}
         >
-          <PlusOutlined /> 新增
+          新增
         </Button>
       </Tooltip>
       <Modal
         title="新增Chain"
-        className={classNames('chain-manager-settings-modal')}
         open={isModalOpen}
         onCancel={handleCancel}
         footer={[
-          <LoadingButton
-            requestApi={handleOk}
-            type="primary"
-            key="save"
-          >
+          <LoadingButton requestApi={handleOk} type="primary" key="save">
             确定
           </LoadingButton>,
         ]}
       >
-        <div>
-          <FormRender form={form} schema={schema} footer={false} />
-        </div>
+        <FormRender form={form} schema={schema} footer={false} />
       </Modal>
-    </React.Fragment>
+    </>
   );
 };
 
