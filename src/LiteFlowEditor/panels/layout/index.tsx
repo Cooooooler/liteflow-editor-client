@@ -3,7 +3,7 @@ import { SplitBox } from '@antv/x6-react-components';
 import '@antv/x6-react-components/es/split-box/style/index.css';
 import React, { ReactNode } from 'react';
 import { useGraphWrapper } from '../../hooks';
-import styles from './index.module.less';
+import { createStyles } from '../../styles';
 
 interface ISubComponentProps {
   flowGraph: Graph;
@@ -19,9 +19,21 @@ interface IProps {
   children: ReactNode;
 }
 
+const useStyles = createStyles(({ token }) => {
+  return {
+    editorLayoutContainer: {
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      width: '100%',
+      border: `1px solid ${token.colorBorder}`,
+    },
+  };
+});
+
 const Layout: React.FC<IProps> = (props) => {
   const { flowGraph, SideBar, ToolBar, SettingBar, widgets } = props;
-
+  const { styles } = useStyles();
   const wrapperRef = useGraphWrapper();
 
   const handleResize = () => {
@@ -40,8 +52,8 @@ const Layout: React.FC<IProps> = (props) => {
   }
 
   return (
-    <div className={styles.liteflowEditorLayoutContainer}>
-      <div className={styles.liteflowEditorToolBar }>{toolBar}</div>
+    <div className={styles.editorLayoutContainer}>
+      {toolBar}
       <SplitBox
         split={'vertical'}
         minSize={50}
@@ -50,7 +62,7 @@ const Layout: React.FC<IProps> = (props) => {
         primary="first"
         onResizing={handleResize}
       >
-        <div className={styles.liteflowEditorSideBar}>{sideBar}</div>
+        {sideBar}
         <SplitBox
           split={'vertical'}
           minSize={50}
@@ -60,7 +72,7 @@ const Layout: React.FC<IProps> = (props) => {
           onResizing={handleResize}
         >
           {props.children}
-          <div className={styles.liteflowEditorSettingBar}>{settingBar}</div>
+          {settingBar}
         </SplitBox>
       </SplitBox>
     </div>

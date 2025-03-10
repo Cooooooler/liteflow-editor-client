@@ -185,8 +185,7 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(
     }, [flowGraph]);
 
     return (
-      // @ts-ignore
-      <GraphContext.Provider // @ts-ignore
+      <GraphContext.Provider
         value={{
           graph: flowGraph!,
           graphWrapper: wrapperRef,
@@ -208,7 +207,6 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(
             <div className={styles.liteflowEditorGraph} ref={graphRef} />
             <div className={styles.liteflowEditorMiniMap} ref={miniMapRef} />
             {flowGraph && <Breadcrumb flowGraph={flowGraph} />}
-            {/* {flowGraph && <NodeEditorModal flowGraph={flowGraph} />} */}
             {flowGraph && (
               <FlowGraphContextMenu
                 {...contextMenuInfo}

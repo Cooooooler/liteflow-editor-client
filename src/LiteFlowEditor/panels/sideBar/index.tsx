@@ -57,13 +57,6 @@ const SideBar: React.FC<ISideBarProps> = (props) => {
             position.x + size.width / 2,
             position.y + size.height / 2,
           );
-          // let cellViews =
-          //   cellViewsFromPoint.filter((cellView) => cellView.isEdgeView()) ||
-          //   [];
-          // if (cellViews && cellViews.length) {
-          //   const currentEdge = flowGraph.getCellById(
-          //     cellViews[cellViews.length - 1].cell.id,
-          //   ) as Edge | null;
           if (lastEdgeRef.current) {
             const currentEdge = lastEdgeRef.current;
             if (currentEdge) {

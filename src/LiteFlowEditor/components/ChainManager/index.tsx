@@ -15,7 +15,7 @@ import { handleDesc, safeParse, safeStringify } from '../../utils';
 import { LoadingButton } from '../LoadingButton';
 import AddChain, { Chain } from './AddChain';
 
-const useStyles = createStyles(({ token, css }) => {
+const useStyles = createStyles(({ token }) => {
   return {
     wrapper: {
       display: 'flex',
@@ -24,6 +24,7 @@ const useStyles = createStyles(({ token, css }) => {
     },
   };
 });
+
 const ChainManager: FC = () => {
   const [chains, setChains] = useState<Array<Chain>>([]);
   const [currentChain, setCurrentChain] = useState<Chain>();
@@ -89,7 +90,6 @@ const ChainManager: FC = () => {
         <>
           <LoadingButton
             type="primary"
-            className="chain-manager-save-btn"
             requestApi={handleSave}
             disabled={!chains.length || !currentChain?.id}
             icon={<SaveOutlined />}
@@ -102,14 +102,13 @@ const ChainManager: FC = () => {
         <Button
           type="primary"
           danger
-          className="chain-manager-delete-btn"
           onClick={handleDelete}
           disabled={!chains.length || !currentChain?.id}
         >
           <DeleteOutlined /> 删除
         </Button>
       </Tooltip>
-      <AddChain onChange={getChainList} className="chain-manager-add-btn" />
+      <AddChain onChange={getChainList} />
     </div>
   );
 };
