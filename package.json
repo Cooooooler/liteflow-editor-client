@@ -94,6 +94,7 @@
     "@antv/x6-plugin-snapline": "^2.1.7",
     "@antv/x6-react-components": "^2.0.8",
     "@antv/x6-react-shape": "^2.2.3",
+    "@ctrl/tinycolor": "^4.1.0",
     "ahooks": "^3.8.4",
     "antd": "^5.24.1",
     "antd-style": "^3.7.1",

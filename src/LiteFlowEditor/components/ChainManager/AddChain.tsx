@@ -5,7 +5,6 @@ import React, { useState } from 'react';
 import { addChain } from '../../services/api';
 import { handleDesc } from '../../utils';
 import { LoadingButton } from '../LoadingButton';
-import './index.less';
 
 export type Chain = {
   id: number;

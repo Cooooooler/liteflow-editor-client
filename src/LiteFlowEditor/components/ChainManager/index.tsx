@@ -1,7 +1,6 @@
 import { DeleteOutlined, SaveOutlined } from '@ant-design/icons';
 import { useAsyncEffect } from 'ahooks';
 import { Button, Modal, Select, Tooltip } from 'antd';
-import { createStyles } from 'antd-style';
 import React, { FC, useCallback, useContext, useState } from 'react';
 import { IGraphContext } from 'src/LiteFlowEditor/context/GraphContext';
 import { GraphContext, useModel } from '../../../../src/index';
@@ -11,20 +10,20 @@ import {
   getChainPage,
   updateChain,
 } from '../../services/api';
+import { createStyles } from '../../styles';
 import { handleDesc, safeParse, safeStringify } from '../../utils';
 import { LoadingButton } from '../LoadingButton';
 import AddChain, { Chain } from './AddChain';
 
 const useStyles = createStyles(({ token, css }) => {
   return {
-    wrapper: css`
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    `,
+    wrapper: {
+      display: 'flex',
+      gap: token.margin,
+      alignItems: 'center',
+    },
   };
 });
-
 const ChainManager: FC = () => {
   const [chains, setChains] = useState<Array<Chain>>([]);
   const [currentChain, setCurrentChain] = useState<Chain>();
