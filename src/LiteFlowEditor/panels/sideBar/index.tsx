@@ -58,6 +58,10 @@ const useStyles = createStyles(({ token, css }) => {
       background-color: ${token.colorBgContainerDisabled};
       color: ${token.colorTextDisabled};
     `,
+    editorSideBarCellText:css`
+      width: 4em;
+      text-align: center;
+    `
   };
 });
 
@@ -205,7 +209,7 @@ const PanelContent: React.FC<IPanelContentProps> = (props) => {
                 }
               }}
             />
-            <Text>{cellType.label}</Text>
+            <Text className={styles.editorSideBarCellText}>{cellType.label}</Text>
           </div>
         );
       })}

@@ -22,15 +22,21 @@ const useStyles = createStyles(({token,css})=>{
       flex-direction: column;
       width: 100%;
       height: 100%;
-      .ant-tabs-nav {
-        margin-bottom: 0;
-      }
+
       .ant-tabs-nav-wrap {
         flex: 1;
         justify-content: center;
         align-items: center;
         background-color: ${token.colorBgContainer};
         border-bottom: 1px solid ${token.colorBorder};
+      }
+    `,
+    editorTabs:css`
+      height: 100%;
+      overflow: auto;
+
+      & > .ant-tabs-nav {
+        margin-bottom: 0;
       }
     `
   }
@@ -80,6 +86,7 @@ const SettingBar: React.FC<IProps> = (props) => {
   return (
     <div className={styles.editorSettingBarContainer}>
       <Tabs
+        className={styles.editorTabs}
         defaultActiveKey={'properties'}
         items={[
           {

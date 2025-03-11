@@ -28,6 +28,10 @@ const useStyles = createStyles(({ token, css }) => {
       width: 100%;
       border: 1px solid ${token.colorBorder};
     `,
+    editorBarContainer:css`
+      height: 100%;
+      overflow: auto;
+    `
   };
 });
 
@@ -62,7 +66,9 @@ const Layout: React.FC<IProps> = (props) => {
         primary="first"
         onResizing={handleResize}
       >
-        {sideBar}
+        <div className={styles.editorBarContainer}>
+          {sideBar}
+        </div>
         <SplitBox
           split={'vertical'}
           minSize={50}
