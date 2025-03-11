@@ -1,6 +1,6 @@
 import { Edge, Graph, Node } from '@antv/x6';
 import { Dnd } from '@antv/x6-plugin-dnd';
-import { Collapse } from 'antd';
+import { Collapse, Typography } from 'antd';
 import classNames from 'classnames';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -15,16 +15,55 @@ import { findViewsFromPoint } from '../../common/events';
 import { history } from '../../hooks/useHistory';
 import ELBuilder from '../../model/builder';
 import { INodeData } from '../../model/node';
-import styles from './index.module.less';
+import { createStyles } from '../../styles';
 
-const { Panel } = Collapse;
+const { Text } = Typography;
 
 interface ISideBarProps {
   flowGraph: Graph;
 }
 
+const useStyles = createStyles(({ token, css }) => {
+  return {
+    editorSideBarCollapse: css`
+      &.ant-collapse {
+        border: 0;
+        border-radius: 0;
+      }
+    `,
+    shapeWrapper: css`
+      display: flex;
+      position: relative;
+      cursor: pointer;
+      pointer-events: auto;
+    `,
+    shapeSvg: css`
+      height: 30px;
+      aspect-ratio: 1;
+      overflow: visible;
+    `,
+    editorSideBarPanelContent: css`
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-gap: ${token.marginXS}px;
+    `,
+    editorSideBarCellContainer: css`
+      display: flex;
+      gap: ${token.marginXS}px;
+      flex-direction: column;
+      align-items: center;
+    `,
+    disabled: css`
+      cursor: not-allowed;
+      background-color: ${token.colorBgContainerDisabled};
+      color: ${token.colorTextDisabled};
+    `,
+  };
+});
+
 const SideBar: React.FC<ISideBarProps> = (props) => {
   const { flowGraph } = props;
+  const { styles } = useStyles();
 
   const lastEdgeRef = useRef<Edge | null>(null);
   useEffect(() => {
@@ -115,25 +154,24 @@ const SideBar: React.FC<ISideBarProps> = (props) => {
   }, [setGroups]);
 
   return (
-    <div className={styles.liteflowEditorSideBarContainer}>
-      <Collapse
-        className={styles.liteflowEditorSideBarCollapse}
-        defaultActiveKey={['node', 'sequence', 'branch', 'control', 'other']}
-        items={groups.map((group) => ({
-          key: group.key,
-          label: group.name,
-          children: <PanelContent dnd={dnd} cellTypes={group.cellTypes} />,
-        }))}
-      />
-    </div>
+    <Collapse
+      className={styles.editorSideBarCollapse}
+      defaultActiveKey={['node', 'sequence', 'branch', 'control', 'other']}
+      items={groups.map((group) => ({
+        key: group.key,
+        label: group.name,
+        children: <PanelContent dnd={dnd} cellTypes={group.cellTypes} />,
+      }))}
+    />
   );
 };
 
 const View: React.FC<any> = (props) => {
   const { node, icon, ...rest } = props;
+  const { styles } = useStyles();
   return (
-    <div className={classNames(styles.liteflowShapeWrapper)} {...rest}>
-      <img className={styles.liteflowShapeSvg} src={icon}></img>
+    <div className={styles.shapeWrapper} {...rest}>
+      <img className={styles.shapeSvg} src={icon}></img>
     </div>
   );
 };
@@ -145,32 +183,29 @@ interface IPanelContentProps {
 
 const PanelContent: React.FC<IPanelContentProps> = (props) => {
   const { dnd, cellTypes } = props;
+  const { styles } = useStyles();
   const onMouseDown = (evt: any, node: LiteFlowNode) => {
     dnd.start(Node.create({ shape: node.shape, data: { node } }), evt);
   };
   return (
-    <div className={styles.liteflowEditorSideBarPanelContent}>
+    <div className={styles.editorSideBarPanelContent}>
       {cellTypes.map((cellType, index) => {
         return (
           <div
             key={index}
-            className={classNames(styles.liteflowEditorSideBarCellContainer, {
+            className={classNames(styles.editorSideBarCellContainer, {
               [styles.disabled]: cellType.disabled,
             })}
           >
-            <div className={styles.liteflowEditorSideBarCellWrapper}>
-              <View
-                icon={cellType.icon}
-                onMouseDown={(evt: any) => {
-                  if (!cellType.disabled) {
-                    onMouseDown(evt, cellType);
-                  }
-                }}
-              />
-            </div>
-            <p className={styles.liteflowEditorSideBarCellTitle}>
-              {cellType.label}
-            </p>
+            <View
+              icon={cellType.icon}
+              onMouseDown={(evt: any) => {
+                if (!cellType.disabled) {
+                  onMouseDown(evt, cellType);
+                }
+              }}
+            />
+            <Text>{cellType.label}</Text>
           </div>
         );
       })}

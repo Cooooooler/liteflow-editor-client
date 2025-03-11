@@ -185,6 +185,7 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(
     }, [flowGraph]);
 
     return (
+      // <ThemeProvider appearance={'dark'}>
       <GraphContext.Provider
         value={{
           graph: flowGraph!,
@@ -220,6 +221,7 @@ const LiteFlowEditor = forwardRef<React.FC, ILiteFlowEditorProps>(
           </div>
         </Layout>
       </GraphContext.Provider>
+      // </ThemeProvider>
     );
   },
 );

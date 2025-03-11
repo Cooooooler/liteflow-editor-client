@@ -11,7 +11,6 @@ import {
 } from './properties';
 import {createStyles} from "../../styles";
 
-
 interface IProps {
   flowGraph: Graph;
 }
