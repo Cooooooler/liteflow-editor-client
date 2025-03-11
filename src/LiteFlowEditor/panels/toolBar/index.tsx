@@ -14,9 +14,7 @@ const useStyles = createStyles(({ token, css }) => {
     editorToolBarContainer: css`
       display: flex;
       flex-wrap: wrap;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
+      row-gap: ${token.marginXS}px;
       border-bottom: 1px solid ${token.colorBorder};
       background-color: ${token.colorBgContainer};
       padding: ${token.paddingXXS}px;
@@ -25,7 +23,6 @@ const useStyles = createStyles(({ token, css }) => {
       display: flex;
       flex-direction: row;
       align-items: center;
-      height: 100%;
 
       &:after {
         content: '';
