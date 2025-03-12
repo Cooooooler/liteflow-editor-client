@@ -1,26 +1,61 @@
-import React, { useEffect, useState, MouseEventHandler } from 'react';
-import classNames from 'classnames';
+import { DownOutlined } from '@ant-design/icons';
 import { Graph, StringExt } from '@antv/x6';
 import { Tree } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import type { DataNode } from 'antd/es/tree';
+import classNames from 'classnames';
+import React, { MouseEventHandler, useEffect, useState } from 'react';
+import { getIconByType } from '../../../cells';
 import { useModel } from '../../../hooks/useModel';
 import ELNode from '../../../model/node';
-import { getIconByType } from '../../../cells';
-import styles from './index.module.less';
+import { createStyles } from '../../../styles';
 
 interface IProps {
   flowGraph: Graph;
 }
+
+const useStyles = createStyles(({ token, css }) => {
+  return {
+    editorOutlineContainer: css`
+      padding: ${token.paddingXS}px;
+
+      .ant-tree .ant-tree-treenode {
+        white-space: nowrap;
+      }
+
+      .ant-tree .ant-tree-node-content-wrapper {
+        display: flex;
+      }
+
+      .ant-tree-title {
+        flex: 1;
+        transform: translateY(-2px);
+      }
+
+      .ant-tree-iconEle.ant-tree-icon__customize {
+        transform: translateY(-2px);
+      }
+    `,
+    editorOutlineIcon: css`
+      img {
+        width: 100%;
+        height: 100%;
+      }
+    `,
+    editorOutlineTitle:css`
+      padding-left: ${token.paddingXS}px;
+    `
+  };
+});
 
 const TreeNodeTitle: React.FC<{
   model: ELNode;
   onClick: MouseEventHandler<HTMLDivElement>;
 }> = ({ model, onClick }) => {
   const { id, type } = model;
+  const { styles } = useStyles();
   return (
     <div
-      className={classNames(styles.liteflowEditorOutlineTitle)}
+      className={classNames(styles.editorOutlineTitle)}
       onClick={onClick}
     >
       <span>{id ? `${id} : ${type}` : type}</span>
@@ -30,6 +65,8 @@ const TreeNodeTitle: React.FC<{
 
 const Outline: React.FC<IProps> = (props) => {
   const { flowGraph } = props;
+  const { styles } = useStyles();
+
   const model = useModel();
   const initialkeys: string[] = [];
   const [treeData, setTreeData] = useState<DataNode[]>(
@@ -53,11 +90,8 @@ const Outline: React.FC<IProps> = (props) => {
       title: <TreeNodeTitle model={currentModel} onClick={handleClick} />,
       key,
       icon: (
-        <div className={styles.liteflowEditorOutlineIcon} onClick={handleClick}>
-          <img
-            className={styles.liteflowEditorOutlineImage}
-            src={getIconByType(currentModel.type)}
-          />
+        <div className={styles.editorOutlineIcon} onClick={handleClick}>
+          <img src={getIconByType(currentModel.type)} />
         </div>
       ),
     };
@@ -91,7 +125,7 @@ const Outline: React.FC<IProps> = (props) => {
   }, [flowGraph, setTreeData]);
 
   return (
-    <div className={styles.liteflowEditorOutlineContainer}>
+    <div className={styles.editorOutlineContainer}>
       <Tree
         blockNode
         showIcon

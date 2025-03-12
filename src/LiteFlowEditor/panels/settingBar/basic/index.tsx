@@ -1,14 +1,27 @@
-import React, { useEffect, useState } from 'react';
 import { Graph } from '@antv/x6';
-import { useModel } from '../../../hooks/useModel';
-import styles from './index.module.less';
+import React, { useEffect, useState } from 'react';
+import { useModel } from '../../../hooks';
+import { createStyles } from '../../../styles';
 
 interface IProps {
   flowGraph: Graph;
 }
 
+const useStyles = createStyles(({ token, css }) => {
+  return {
+    editorBasicContainer: css`
+      padding: ${token.paddingXS}px;
+    `,
+    editorTitle: css`
+      color: ${token.colorTextHeading};
+      font-weight: ${token.fontWeightStrong};
+    `,
+  };
+});
+
 const Basic: React.FC<IProps> = (props) => {
   const { flowGraph } = props;
+  const { styles } = useStyles();
   const [elString, setELString] = useState<string>(useModel()?.toEL(' '));
 
   useEffect(() => {
@@ -22,11 +35,9 @@ const Basic: React.FC<IProps> = (props) => {
   }, [flowGraph, setELString]);
 
   return (
-    <div className={styles.liteflowEditorBasicContainer}>
-      <div className={styles.liteflowEditorTitle}>EL表达式：</div>
-      <div className={styles.elContentWrapper}>
-        <pre>{elString}</pre>
-      </div>
+    <div className={styles.editorBasicContainer}>
+      <div className={styles.editorTitle}>EL表达式：</div>
+      <pre>{elString}</pre>
     </div>
   );
 };

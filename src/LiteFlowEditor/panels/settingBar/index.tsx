@@ -3,25 +3,33 @@ import { Tabs } from 'antd';
 import React, { useEffect, useReducer, useState } from 'react';
 import NodeOperator from '../../model/el/node-operator';
 import ELNode from '../../model/node';
+import { createStyles } from '../../styles';
 import Basic from './basic';
 import Outline from './outline';
 import {
   ComponentPropertiesEditor,
   ConditionPropertiesEditor,
 } from './properties';
-import {createStyles} from "../../styles";
 
 interface IProps {
   flowGraph: Graph;
 }
 
-const useStyles = createStyles(({token,css})=>{
+const useStyles = createStyles(({ token, css }) => {
   return {
-    editorSettingBarContainer:css`
+    editorSettingBarContainer: css`
       display: flex;
       flex-direction: column;
       width: 100%;
       height: 100%;
+
+      .ant-tabs {
+        height: 100%;
+      }
+
+      .ant-tabs-top .ant-tabs-nav {
+        margin-bottom: 0;
+      }
 
       .ant-tabs-nav-wrap {
         flex: 1;
@@ -30,21 +38,22 @@ const useStyles = createStyles(({token,css})=>{
         background-color: ${token.colorBgContainer};
         border-bottom: 1px solid ${token.colorBorder};
       }
-    `,
-    editorTabs:css`
-      height: 100%;
-      overflow: auto;
 
-      & > .ant-tabs-nav {
-        margin-bottom: 0;
+      .ant-tabs-content-holder {
+        flex: 1;
       }
-    `
-  }
-})
+
+      .ant-tabs-content {
+        height: 100%;
+        overflow-y: auto;
+      }
+    `,
+  };
+});
 
 const SettingBar: React.FC<IProps> = (props) => {
   const { flowGraph } = props;
-  const {styles} = useStyles()
+  const { styles } = useStyles();
 
   const [selectedModel, setSelectedModel] = useState<ELNode | null>(null);
 
@@ -86,7 +95,6 @@ const SettingBar: React.FC<IProps> = (props) => {
   return (
     <div className={styles.editorSettingBarContainer}>
       <Tabs
-        className={styles.editorTabs}
         defaultActiveKey={'properties'}
         items={[
           {

@@ -2,22 +2,7 @@ import { Node } from '@antv/x6';
 import classNames from 'classnames';
 import React, { ReactNode } from 'react';
 
-import styled, { css } from 'styled-components';
 import styles from './index.module.less';
-
-const IsHighlightSC = styled.div<{ $highlight?: boolean }>`
-  ${(props) => {
-    switch (props.$highlight) {
-      case true:
-        return css`
-          background-color: rgba(191, 79, 116);
-          border-radius: 4px;
-        `;
-      default:
-        return;
-    }
-  }}
-`;
 
 const NodeView: React.FC<{
   icon: string;
@@ -31,14 +16,11 @@ const NodeView: React.FC<{
     highlight: boolean;
   };
   return (
-    <IsHighlightSC
-      className={classNames(styles.liteflowShapeWrapper)}
-      $highlight={highlight}
-    >
+    <div className={classNames(styles.liteflowShapeWrapper)}>
       <img className={styles.liteflowShapeSvg} src={icon}></img>
       {children}
       <div className={styles.liteflowShapeText}>{idText}</div>
-    </IsHighlightSC>
+    </div>
   );
 };
 
