@@ -1,7 +1,7 @@
 import { useAsyncEffect } from 'ahooks';
 import { Tag } from 'antd';
 import React, { useCallback, useState } from 'react';
-import { getChainPage } from '../../../../src/LiteFlowEditor/services/api';
+import { getChainPage } from '../../services/api';
 import './index.less';
 
 enum Status {

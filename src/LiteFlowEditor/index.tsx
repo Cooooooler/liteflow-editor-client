@@ -9,7 +9,6 @@ import React, {
   useState,
 } from 'react';
 import createFlowGraph from './panels/flowGraph/createFlowGraph';
-// import NodeEditorModal from './panels/flowGraph/nodeEditorModal';
 import { forceLayout } from './common/layout';
 import { ChainManager, ConnectStatus } from './components';
 import { MIN_ZOOM } from './constant';
